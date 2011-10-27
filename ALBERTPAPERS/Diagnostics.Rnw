@@ -1,4 +1,5 @@
-% setwd("E:\\CODE\\ALBERTPAPERS") ; getwd()
+% setwd("C:\\Users\\triffe\\git\\ViennaPaper\\ALBERTPAPERS") ; getwd()
+
 \documentclass[a4paper]{article}
 \usepackage[OT1]{fontenc}
 \usepackage[nogin]{Sweave}
@@ -9,7 +10,7 @@
 \begin{document}
 
 <<cache=FALSE>>=
-setCacheDir("E:\\CODE\\ALBERTPAPERS\\cache")
+setCacheDir("cache\\")
 @
 
 \title{Education, Union Formation and Childbearing: Descriptive Diagnostic Plots}
@@ -17,7 +18,7 @@ setCacheDir("E:\\CODE\\ALBERTPAPERS\\cache")
 \maketitle
 
 \section{Abstract}
-This document is intended to serve as a graphical overview of WORLDFAM data presently being used to describe the relationship between school attendance (enrollment) and the two reproductive transitions of union formation and childbearing. This analysis is crossnational, and includes data from many more populations than all prior studies on simialr topics. This has been possible by the combining of two sources, IPUMS and DHS data, both from years close to the year 2000. In order to include llow this large set of countries it has been necessary to limit our study questions to those that can be answered with current status information. Rather than to establish cause and effect, or propose new mechanisms that might explain the patterns present in these data, we will be content to take a first glance at the patterns themselves. The challenge will be to find ways to graphically display large amounts of data while being able to visually separate different dimensions of the data, such as age and individual country datapoints. This document also serves as an annotated guide to the R code used to produce these graphs, which is embedded in the Sweave syntax used to write this document.
+This document is intended to serve as a graphical overview of WORLDFAM data presently being used to describe the relationship between school attendance (enrollment) and the two reproductive transitions of union formation and childbearing. This analysis is crossnational, and includes data from many more populations than all prior studies on similar topics. This has been possible by the combining of two sources, IPUMS and DHS data, both from years close to the year 2000. In order to include this large set of countries it has been necessary to limit our study questions to those that can be answered with current status information. Rather than to establish cause and effect, or propose new mechanisms that might explain the patterns present in these data, we will be content to take a first glance at the patterns themselves. The challenge will be to find ways to graphically display large amounts of data while being able to visually separate different dimensions of the data, such as age and individual country datapoints. This document also serves (for myself, Tim) as an annotated guide to the R code used to produce these graphs, which is embedded in the Sweave syntax used to write this document.
 
 \pagebreak
 
@@ -42,7 +43,8 @@ Primero cambiar la definición de Ever in union and IN UNION.
 
 <<>>=
 # read in data for first round of graphs
-DATA <- read.table("E:\\WRITING\\ViennaDec2011\\proportions.txt",header=T,sep="\t",na.strings = ".")
+DATA <- read.table("DATA\\FIGURE1_2.txt",header=T,sep="\t",na.strings = ".")
+#DATA <- read.table("E:\\WRITING\\ViennaDec2011\\proportions.txt",header=T,sep="\t",na.strings = ".")
 DATA$country <- as.character(DATA$country)
 DATA$sex <- as.character(DATA$sex)
 @
@@ -52,63 +54,72 @@ DATA$sex <- as.character(DATA$sex)
 
 We start with boxplots, about as aggregate as you can get. Strictly speaking, the different box colors cannot be directly compared, even within the same age, because there are different observations counts for each age/variable. All valid observations were included to produce this plot. See the following figure for an idea of how observation availability may be influencing the present plot. Recall, these boxes are rough overviews of distributions over countries and nothing more, so even if the same countries were in each age and variable, it is still a long step to infer a standard curve, or age pattern, behind these distribution summaries. To be clear, the central line in each box is the median, the upper boundary the 75th percentile, and the lower boundary the 25th percentile, the maxima are the \textit{smaller} of 1) the maximum value or 2) the 75th percentile+ 1.5* the interquartile range (IQR). This is standard practice for boxplots, since the point is to reduce outlier noise. Further onward we will see the noisy version of this exact same plot. Review this plot taking into account the following plot.
 
+% the plot and its products are defined within a function in order to speed along the cache on rebuilds.
+% bit by bit I'll redefine the other figures in this way: doesn't take that long
+<<>>=
+f1 <- function(){
+	omar <- par("mar")
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
+	QuantilesMat <- matrix(ncol=8,nrow=13)
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 12:24){
+		# in school
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		x <- rep(i-.3,length(y))
+		#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i-.4,FN[1],i-.2,FN[3],col="#EEC900") #IQR box
+		segments(i-.4,FN[2],i-.2,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.3,FN[1],i-.3,mincut,lty=2,col="#EEC900") # lower whisker
+		segments(i-.3,FN[3],i-.3,maxcut,lty=2,col="#EEC900") # upper whisker
+		points(c(i-.3,i-.3),c(mincut,maxcut),pch=19,col="#EEC900",cex=.5)
+		# in union
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
+		x <- rep(i,length(y))
+		#points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		QuantilesMat[i-11,1:3] <- c(FN)
+		QuantilesMat[i-11,4] <- length(y[!is.na(y)])
+		rect(i-.1,FN[1],i+.1,FN[3],col="#7D26CD")
+		segments(i-.1,FN[2],i+.1,FN[2])
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i,FN[1],i,mincut,lty=2,col="#7D26CD")
+		segments(i,FN[3],i,maxcut,lty=2,col="#7D26CD")
+		points(c(i,i),c(mincut,maxcut),pch=19,col="#7D26CD",cex=.5)
+		# mother
+		y <- 100*(1-DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
+		x <- rep(i+.3,length(y))
+		#points(jitter(x,amount=.05),y,col="#FF69B460",pch=19)
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		QuantilesMat[i-11,5:7] <- c(FN)
+		QuantilesMat[i-11,8] <- length(y[!is.na(y)])
+		rect(i+.2,FN[1],i+.4,FN[3],col="#FF69B4")
+		segments(i+.2,FN[2],i+.4,FN[2]) 
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+.3,FN[1],i+.3,mincut,lty=2,col="#FF69B4")
+		segments(i+.3,FN[3],i+.3,maxcut,lty=2,col="#FF69B4")
+		points(c(i+.3,i+.3),c(mincut,maxcut),pch=19,col="#FF69B4",cex=.5)
+	}
+	legend(12,-12,fill=c("#EEC900","#7D26CD","#FF69B4"),legend=c("\\% enrolled","\\% union","\\% parent"),xpd=T)
+	par(mar=omar)
+	colnames(QuantilesMat) <- c("union .25","union .5","union .75","obs","parent .25","parent .5","parent .75","obs")
+	rownames(QuantilesMat)<- 12:24
+	return(QuantilesMat)
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-omar <- par("mar")
-par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
-plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
-QuantilesMat <- matrix(ncol=8,nrow=13)
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(12,24,by=2),col="white")
-abline(h=seq(20,80,by=20),col="white")
-for (i in 12:24){
-	# in school
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
-	x <- rep(i-.3,length(y))
-	#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
-	# IQR box:
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	rect(i-.4,FN[1],i-.2,FN[3],col="#EEC900") #IQR box
-	segments(i-.4,FN[2],i-.2,FN[2]) #median line
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i-.3,FN[1],i-.3,mincut,lty=2,col="#EEC900") # lower whisker
-	segments(i-.3,FN[3],i-.3,maxcut,lty=2,col="#EEC900") # upper whisker
-	points(c(i-.3,i-.3),c(mincut,maxcut),pch=19,col="#EEC900",cex=.5)
-	# in union
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
-	x <- rep(i,length(y))
-	#points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	QuantilesMat[i-11,1:3] <- c(FN)
-	QuantilesMat[i-11,4] <- length(y[!is.na(y)])
-	rect(i-.1,FN[1],i+.1,FN[3],col="#7D26CD")
-	segments(i-.1,FN[2],i+.1,FN[2])
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i,FN[1],i,mincut,lty=2,col="#7D26CD")
-	segments(i,FN[3],i,maxcut,lty=2,col="#7D26CD")
-	points(c(i,i),c(mincut,maxcut),pch=19,col="#7D26CD",cex=.5)
-	# mother
-	y <- 100*(1-DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
-	x <- rep(i+.3,length(y))
-	#points(jitter(x,amount=.05),y,col="#FF69B460",pch=19)
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	QuantilesMat[i-11,5:7] <- c(FN)
-	QuantilesMat[i-11,8] <- length(y[!is.na(y)])
-	rect(i+.2,FN[1],i+.4,FN[3],col="#FF69B4")
-	segments(i+.2,FN[2],i+.4,FN[2]) 
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i+.3,FN[1],i+.3,mincut,lty=2,col="#FF69B4")
-	segments(i+.3,FN[3],i+.3,maxcut,lty=2,col="#FF69B4")
-	points(c(i+.3,i+.3),c(mincut,maxcut),pch=19,col="#FF69B4",cex=.5)
-}
-legend(12,-12,fill=c("#EEC900","#7D26CD","#FF69B4"),legend=c("\\% enrolled","\\% union","\\% parent"),xpd=T)
-par(mar=omar)
-colnames(QuantilesMat) <- c("union .25","union .5","union .75","obs","parent .25","parent .5","parent .75","obs")
-rownames(QuantilesMat)<- 12:24
+QuantilesMat1 <- f1()
 @
 \caption{Females, 2000, \% Enrollmed vs \% in union, \% parent}
 \label{boxplotfemales1}
@@ -120,8 +131,8 @@ This plot displays the case count used to cacluate the quantiles in Figure \ref{
 
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,QuantilesMat[,4],type="s",xlab="age",ylab="observations",col="#7D26CD",ylim=c(0,110))
-lines(12:24,QuantilesMat[,8],type="s",col="#FF69B4",lty=2)
+plot(12:24,QuantilesMat1[,4],type="s",xlab="age",ylab="observations",col="#7D26CD",ylim=c(0,130))
+lines(12:24,QuantilesMat1[,8],type="s",col="#FF69B4",lty=2)
 legend("bottomright",col=c("#7D26CD","#FF69B4"),lty=c(1,2),legend=c("obs in union","obs parent"))
 @
 \caption{Females, 2000, observation counts of \% in union, \% parent used in first boxplot}
@@ -132,45 +143,53 @@ legend("bottomright",col=c("#7D26CD","#FF69B4"),lty=c(1,2),legend=c("obs in unio
 
 For the sake of thoroughness, have a look at what I call the noise-plot behind Figure \ref{boxplotfemales1}. The case counts from Figure \ref{boxplotfemales1obs} are here still relevant. Note the different color for enrollment, since yellow doesn't show through very well with transparency. This plot should make clear 1) that quantiles are not indicative of natural breaks!, 2) that there is massive dispersion, 3) that most of the time the extreme points displayed in Figure \ref{boxplotfemales1} coincide with the maxima and minima of the observations- this is less the case with the younger ages for which we have fewer observations. In the later ages where you don't see the black lines among the minima, this is because the transparent points are so heavily stacked on top of the lines that it covers the line up. That's not bad- if you can't see the line because its covered with points then that means the points fall within the line.
 
+% this plot is particularly large, and takes some time to insert...
+<<>>=
+f3 <- function(){
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 12:24){
+		# in school
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		x <- rep(i-.3,length(y))
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.3,mincut,i-.3,maxcut)
+		points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:
+		rect(i-.4,FN[1],i-.2,FN[3])
+		# in union
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
+		x <- rep(i,length(y))
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i,mincut,i,maxcut)
+		points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
+		rect(i-.1,FN[1],i+.1,FN[3])
+		# mother
+		y <- 100*(1-DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
+		x <- rep(i+.3,length(y))
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+.3,mincut,i+.3,maxcut)
+		points(jitter(x,amount=.05),y,col="#FF69B460",pch=19)
+		rect(i+.2,FN[1],i+.4,FN[3])
+	}
+	legend(12,-12,fill=c("#FF4500","#7D26CD","#FF69B4"),legend=c("\\% enrolled","\\% union","\\% parent"),xpd=T)
+}
+@
+
+
 \begin{figure}
 <<fig=TRUE>>=
-par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
-plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(12,24,by=2),col="white")
-abline(h=seq(20,80,by=20),col="white")
-for (i in 12:24){
-	# in school
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
-	x <- rep(i-.3,length(y))
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i-.3,mincut,i-.3,maxcut)
-	points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
-	# IQR box:
-	rect(i-.4,FN[1],i-.2,FN[3])
-	# in union
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
-	x <- rep(i,length(y))
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i,mincut,i,maxcut)
-	points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
-	rect(i-.1,FN[1],i+.1,FN[3])
-	# mother
-	y <- 100*(1-DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
-	x <- rep(i+.3,length(y))
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i+.3,mincut,i+.3,maxcut)
-	points(jitter(x,amount=.05),y,col="#FF69B460",pch=19)
-	rect(i+.2,FN[1],i+.4,FN[3])
-}
-legend(12,-12,fill=c("#FF4500","#7D26CD","#FF69B4"),legend=c("\\% enrolled","\\% union","\\% parent"),xpd=T)
+f3()
 @
 \caption{Females, 2000, first boxplot repeated, including points for all observations.}
 \label{boxplotfemales1noise}
@@ -181,47 +200,54 @@ legend(12,-12,fill=c("#FF4500","#7D26CD","#FF69B4"),legend=c("\\% enrolled","\\%
 \subsection{Boxplots for males}
 Now, we repeat the same exercise for males, producing the same three plots from above. Note that males have no information for childbearing, so the figure may appear somewhat more sparse. This plot is of course no solid proof, but nudged, winks and points in the direction of there being much stronger separation of roles for males than females. This may be due to 1) the male marriage curve starting later in life \textit{anyway} or 2) the male marriage curve being \textit{dependant on} males' human capital (or something like that), thereby strengthening the role incompatibility hypothesis, or 3) codetermination, or none of these... This will all become clearer when we look at true bivariate relationships, and when we take a second look at these boxplots, splitting on school attendance.
 
+<<>>=
+f4 <- function(){
+	omar <- par("mar")
+	QuantilesMat <- matrix(ncol=4,nrow=13)
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 12:24){
+		# in school
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000,"prop_school"]
+		#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		QuantilesMat[i-11,1:3] <- c(FN)
+		QuantilesMat[i-11,4] <- length(y[!is.na(y)])
+		rect(i-.3,FN[1],i-.1,FN[3],col="#EEC900") #IQR box
+		segments(i-.3,FN[2],i-.1,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.2,FN[1],i-.2,mincut,lty=2,col="#EEC900") # lower whisker
+		segments(i-.2,FN[3],i-.2,maxcut,lty=2,col="#EEC900") # upper whisker
+		points(c(i-.2,i-.2),c(mincut,maxcut),pch=19,col="#EEC900",cex=.5)
+		# in union
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000,"prop_union"]
+		#points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i+.1,FN[1],i+.3,FN[3],col="#7D26CD")
+		segments(i+.1,FN[2],i+.3,FN[2])
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+.2,FN[1],i+.2,mincut,lty=2,col="#7D26CD")
+		segments(i+.2,FN[3],i+.2,maxcut,lty=2,col="#7D26CD")
+		points(c(i+.2,i+.2),c(mincut,maxcut),pch=19,col="#7D26CD",cex=.5)
+	}
+	legend(12,-12,fill=c("#EEC900","#7D26CD"),legend=c("% enrolled","% union"),xpd=T)
+	par(mar=omar)
+	colnames(QuantilesMat) <- c("union .25","union .5","union .75","obs")
+	rownames(QuantilesMat)<- 12:24
+	return(QuantilesMat)
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-omar <- par("mar")
-QuantilesMat <- matrix(ncol=4,nrow=13)
-par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
-plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(12,24,by=2),col="white")
-abline(h=seq(20,80,by=20),col="white")
-for (i in 12:24){
-	# in school
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000,"prop_school"]
-	#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
-	# IQR box:
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	QuantilesMat[i-11,1:3] <- c(FN)
-	QuantilesMat[i-11,4] <- length(y[!is.na(y)])
-	rect(i-.3,FN[1],i-.1,FN[3],col="#EEC900") #IQR box
-	segments(i-.3,FN[2],i-.1,FN[2]) #median line
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i-.2,FN[1],i-.2,mincut,lty=2,col="#EEC900") # lower whisker
-	segments(i-.2,FN[3],i-.2,maxcut,lty=2,col="#EEC900") # upper whisker
-	points(c(i-.2,i-.2),c(mincut,maxcut),pch=19,col="#EEC900",cex=.5)
-	# in union
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000,"prop_union"]
-	#points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	rect(i+.1,FN[1],i+.3,FN[3],col="#7D26CD")
-	segments(i+.1,FN[2],i+.3,FN[2])
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i+.2,FN[1],i+.2,mincut,lty=2,col="#7D26CD")
-	segments(i+.2,FN[3],i+.2,maxcut,lty=2,col="#7D26CD")
-	points(c(i+.2,i+.2),c(mincut,maxcut),pch=19,col="#7D26CD",cex=.5)
-}
-legend(12,-12,fill=c("#EEC900","#7D26CD"),legend=c("% enrolled","% union"),xpd=T)
-par(mar=omar)
-colnames(QuantilesMat) <- c("union .25","union .5","union .75","obs")
-rownames(QuantilesMat)<- 12:24
+QuantilesMat <- f4()
 @
 \caption{Males, 2000, \% Enrollmed vs \% in union}
 \label{boxplotmales1}
@@ -243,35 +269,41 @@ plot(12:24,QuantilesMat[,4],type="s",xlab="age",ylab="observations",col="#7D26CD
 
 Again for the sake of thoroughness, let's have a look at the noise plot behind the male box plot. The only thing possibly shocking about this are the two observations at ages 12 and 13 that are above 15\% married already (Rwanda and Senegal)- it's possible, but Joan is presently looking into the case counts from which these figures were derived.
 
+<<>>=
+f6 <- function(){
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="% population",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 12:24){
+		# in school
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		x <- rep(i-.2,length(y))
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.2,mincut,i-.2,maxcut)
+		points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		rect(i-.3,FN[1],i-.1,FN[3])
+		# in union
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
+		x <- rep(i+.2,length(y))
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+.2,mincut,i+.2,maxcut)
+		points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
+		rect(i+.1,FN[1],i+.3,FN[3])
+	}
+	legend(12,-12,fill=c("#FF4500","#7D26CD"),legend=c("\\% enrolled","\\% union"),xpd=T)
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
-plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="% population",xlab="Age")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(12,24,by=2),col="white")
-abline(h=seq(20,80,by=20),col="white")
-for (i in 12:24){
-	# in school
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
-	x <- rep(i-.2,length(y))
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i-.2,mincut,i-.2,maxcut)
-	points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
-	rect(i-.3,FN[1],i-.1,FN[3])
-	# in union
-	y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
-	x <- rep(i+.2,length(y))
-	FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
-	maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
-	mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
-	segments(i+.2,mincut,i+.2,maxcut)
-	points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
-	rect(i+.1,FN[1],i+.3,FN[3])
-}
-legend(12,-12,fill=c("#FF4500","#7D26CD"),legend=c("\\% enrolled","\\% union"),xpd=T)
+f6()
 @
 \caption{Males, 2000, first boxplot repeated, including points for all observations.}
 \label{boxplotmales1noise}
@@ -283,87 +315,100 @@ legend(12,-12,fill=c("#FF4500","#7D26CD"),legend=c("\\% enrolled","\\% union"),x
 \subsection{Enrollment vs in Union}
 Starting always with females, we first look at the bivariate relationship between the aggregate proportion of a population enrolled in school versus the proportion in union. Three representative ages, indicated by color, have been selected to include in this plot in order to reduce clutter, with each point being a country. Thus, each country is included a maximum of three times in this plot. We wish to see whether there is a clear (significant) relationship between the proportion enrolled and the proportion in union, and how this changes with age and so for each of the 3 clouds of points and OLS line is fit, and 95\% confidence bands are drawn- each slope is significant. The present plot includes a total of 93 country-observations (some countries may appear more than once, if say, they have a 1998 and 2001 sample, or some such thing). The axes have been chosen as such because it seems logical that school attendance slides downward with age, but really the plot would be identical but transposed were we to flip the axes. 
 
+<<>>=
+f7 <- function(){
+	ages <- c(16,20,24)
+	cols <- c("#CD2626","#66CD00","#6495ED")
+	par("xaxs"="i","yaxs"="i")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="% enrolled",xlab="% in union")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(20,80,by=20),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+# iterates over ages,cols: fit line, calc conf, plot band, then line, then points
+	cty <- c()
+	for (i in 1:3){
+		x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
+		y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
+		yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
+		ctyi <- paste(ctyi,yri,sep="")
+		nax <- which(is.na(x)) ; nay <-  which(is.na(y))
+		nas <- unique(c(nax,nay))
+		if (length(nas)>0){	ctyi <- ctyi[-nas]}
+		cty <- c(cty,ctyi)
+		minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
+		LM <- lm(y~x) # OLS
+		xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
+		clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
+		#paste(cols[i],15,sep="")
+		polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
+		lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
+		lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		points(x,y,col=cols[i],pch=19)
+	}
+	legend("topright",lwd=2,col=cols,legend=paste("age",ages))
+	cty <- unique(cty)
+	return(cty)
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-# produce figure
-ages <- c(16,20,24)
-cols <- c("#CD2626","#66CD00","#6495ED")
-par("xaxs"="i","yaxs"="i")
-plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="% enrolled",xlab="% in union")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(20,80,by=20),col="white")
-abline(h=seq(20,80,by=20),col="white")
-# iterates over ages,cols: fit line, calc conf, plot band, then line, then points
-cty <- c()
-for (i in 1:3){
-	x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
-	y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
-	ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
-	yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
-	ctyi <- paste(ctyi,yri,sep="")
-	nax <- which(is.na(x)) ; nay <-  which(is.na(y))
-	nas <- unique(c(nax,nay))
-	if (length(nas)>0){	ctyi <- ctyi[-nas]}
-	cty <- c(cty,ctyi)
-	minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
-	LM <- lm(y~x) # OLS
-	xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
-	clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
-	#paste(cols[i],15,sep="")
-	polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
-	lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
-	lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
-	segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
-	points(x,y,col=cols[i],pch=19)
-}
-legend("topright",lwd=2,col=cols,legend=paste("age",ages))
-cty <- unique(cty)
+cty <- f7()
 @
-\caption{Females, 2000, \% Enrolled vs \% in union, 3 ages (93 country observations)}
+\caption{Females, 2000, \% Enrolled vs \% in union, 3 ages (\Sexpr{cty} country observations)}
 \label{femaleunion3lines}
 \end{figure}
 
 \pagebreak
 
 Now we redraw the exact same plot, same variables and same data sources, but including each age. Within each age, and OLS line is drawn, but no confidence bands are drawn. The slope starts off as steeply negative holding steady until around age 15, then drops rapidy until around age 19. The change in slope over age will be examined in a later figure. Color is used to differentiate between ages, with greenish hues indicating young ages (13ish), yellows and reds for the middle ages (14-19), and blues and purples for the upper ages in our range (early 20s). Transparency is used to reduce noise in the clouds of points. 
-
+  
+<<>>=
+f8 <- function(){
+	ages <- 12:24
+	library(grDevices)
+	colsR <- colorRampPalette(c("green","yellow","magenta","blue"))
+	cols <- colsR(length(ages))
+	sdev <- spsprint <- sps <- cty <- c()
+	par("xaxs"="i","yaxs"="i")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(20,80,by=20),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 1:length(ages)){
+		x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
+		y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
+		yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
+		ctyi <- paste(ctyi,yri,sep="")
+		nax <- which(is.na(x)) ; nay <-  which(is.na(y))
+		nas <- unique(c(nax,nay))
+		if (length(nas)>0){	ctyi <- ctyi[-nas]}
+		cty <- c(cty,ctyi)
+		minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
+		LM <- lm(y~x)
+		xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		points(x,y,col=paste(cols[i],45,sep=""),pch=19)
+		pv <- summary(LM)$coefficients[2,4] # p val
+		pv <- ifelse(pv<.0001,"***",ifelse(pv<.001,"**",ifelse(pv<.01,"*",ifelse(pv<.05,"'",""))))
+		sps[i] <- summary(LM)$coefficients[2,1]
+		spsprint[i] <- paste(round(sps[i],3),pv)
+		sdev[i] <- summary(LM)$coefficients[2,2]
+	}
+	legend("topright",col=cols,lwd=2,legend=paste(ages,", slope = ",spsprint,sep=""))
+	cty <- unique(cty)
+	return(list(sps=sps,sdev=sdev))
+}
+@
+  
 \begin{figure}
 <<fig=TRUE>>=
-ages <- 12:24
-library(grDevices)
-colsR <- colorRampPalette(c("green","yellow","magenta","blue"))
-cols <- colsR(length(ages))
-sdev <- spsprint <- sps <- cty <- c()
-par("xaxs"="i","yaxs"="i")
-plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(20,80,by=20),col="white")
-abline(h=seq(20,80,by=20),col="white")
-for (i in 1:length(ages)){
-	x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
-	y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
-	ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
-	yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
-	ctyi <- paste(ctyi,yri,sep="")
-	nax <- which(is.na(x)) ; nay <-  which(is.na(y))
-	nas <- unique(c(nax,nay))
-	if (length(nas)>0){	ctyi <- ctyi[-nas]}
-	cty <- c(cty,ctyi)
-	minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
-	LM <- lm(y~x)
-	xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
-	segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
-	points(x,y,col=paste(cols[i],45,sep=""),pch=19)
-	pv <- summary(LM)$coefficients[2,4] # p val
-	pv <- ifelse(pv<.0001,"***",ifelse(pv<.001,"**",ifelse(pv<.01,"*",ifelse(pv<.05,"'",""))))
-	sps[i] <- summary(LM)$coefficients[2,1]
-	spsprint[i] <- paste(round(sps[i],3),pv)
-	sdev[i] <- summary(LM)$coefficients[2,2]
-}
-legend("topright",col=cols,lwd=2,legend=paste(ages,", slope = ",spsprint,sep=""))
-cty <- unique(cty)
+f8out <- f8()
 @
 \caption{Females, 2000, \% Enrolled vs \% in union, singles ages}
 \label{femaleunionallOLS}
@@ -375,8 +420,8 @@ Questions were raised about the age pattern of the \textit{slope} of the above a
 
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,sps,type='l',ylim=c(-3.5,0),xlab="age",ylab="First Derivative")
-polygon(c(12:24,24:12),c(sps-1.96*sdev,rev(sps+1.96*sdev)),col="#00000030")
+plot(12:24,f8out$sps,type='l',ylim=c(-3.5,0),xlab="age",ylab="First Derivative")
+polygon(c(12:24,24:12),c(f8out$sps-1.96*f8out$sdev,rev(f8out$sps+1.96*f8out$sdev)),col="#00000030")
 abline(h=c(0,-.5,-1,-2),lty=2)
 @
 \caption{Females, 2000, \% Enrolled vs \% in union, change in slope of age-specific OLS}
@@ -388,44 +433,50 @@ abline(h=c(0,-.5,-1,-2),lty=2)
 \subsection{Enrollment vs Mother}
 We repeat the above three plots again for females that have had a child. The country observation count indicates that a country was present in at least one of the age-cuts. All three OLS lines are significant at the 95\% level.
 
+<<>>=
+f9 <- function(){
+	ages <- c(16,20,24)
+	cols <- c("#CD2626","#66CD00","#6495ED")
+	par("xaxs"="i","yaxs"="i")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% mother")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(20,80,by=20),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+# iterates over ages,cols: fit line, calc conf, plot band, then line, then points
+	cty <- c()
+	for (i in 1:3){
+		x <- 100*(1-DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
+		y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
+		yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
+		ctyi <- paste(ctyi,yri,sep="")
+		nax <- which(is.na(x)) ; nay <-  which(is.na(y))
+		nas <- unique(c(nax,nay))
+		if (length(nas)>0){	ctyi <- ctyi[-nas]}
+		cty <- c(cty,ctyi)
+		minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
+		LM <- lm(y~x) # OLS
+		xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
+		clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
+		#paste(cols[i],15,sep="")
+		polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
+		lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
+		lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		points(x,y,col=cols[i],pch=19)
+	}
+	legend("topright",lwd=2,col=cols,legend=paste("age",ages))
+	cty <- unique(cty)
+	return(cty)
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-# produce figure
-ages <- c(16,20,24)
-cols <- c("#CD2626","#66CD00","#6495ED")
-par("xaxs"="i","yaxs"="i")
-plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% mother")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(20,80,by=20),col="white")
-abline(h=seq(20,80,by=20),col="white")
-# iterates over ages,cols: fit line, calc conf, plot band, then line, then points
-cty <- c()
-for (i in 1:3){
-	x <- 100*(1-DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
-	y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
-	ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
-	yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
-	ctyi <- paste(ctyi,yri,sep="")
-	nax <- which(is.na(x)) ; nay <-  which(is.na(y))
-	nas <- unique(c(nax,nay))
-	if (length(nas)>0){	ctyi <- ctyi[-nas]}
-	cty <- c(cty,ctyi)
-	minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
-	LM <- lm(y~x) # OLS
-	xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
-	clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
-	#paste(cols[i],15,sep="")
-	polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
-	lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
-	lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
-	segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
-	points(x,y,col=cols[i],pch=19)
-}
-legend("topright",lwd=2,col=cols,legend=paste("age",ages))
-cty <- unique(cty)
+cty9 <- f9
 @
-\caption{Females, 2000, \% Enrolled vs \% mother, 3 ages (86 country observations)}
+\caption{Females, 2000, \% Enrolled vs \% mother, 3 ages (\Sexpr{cty9} country observations)}
 \label{femalechild3lines}
 \end{figure}
 
@@ -433,42 +484,49 @@ cty <- unique(cty)
 
 Likewise, why not fit an OLS line to each age separately, checking slope and significance. Is there at age at which the relationship between school enrollment and having had a child becomes or ceases to be significant? Yes: age 15. At ages 14 and under we see no significant relationship (in fact the slopes of those lines (greens) can be ignored altogether)- this is prior to and around the age of menarche, and there are likely very few cases in any dataset that would shed light on those ages. The single star at age 15 indicates a mere 90 \% significance, while all later ages are \textit{very significant}. Among the significant ages, the pattern is similar to that for union formation. In following, we plot the age pattern of the slopes of these colored lines.
 
+<<>>=
+f10 <- function(){
+	ages <- 12:24
+	library(grDevices)
+	colsR <- colorRampPalette(c("green","yellow","magenta","blue"))
+	cols <- colsR(length(ages))
+	sdev <- spsprint <- sps <- cty <- c()
+	par("xaxs"="i","yaxs"="i")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(20,80,by=20),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 1:length(ages)){
+		x <- 100*(1-DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
+		y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
+		yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
+		ctyi <- paste(ctyi,yri,sep="")
+		nax <- which(is.na(x)) ; nay <-  which(is.na(y))
+		nas <- unique(c(nax,nay))
+		if (length(nas)>0){	ctyi <- ctyi[-nas]}
+		cty <- c(cty,ctyi)
+		minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
+		LM <- lm(y~x)
+		xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		points(x,y,col=paste(cols[i],45,sep=""),pch=19)
+		pv <- summary(LM)$coefficients[2,4] # p val
+		pv <- ifelse(pv<.0001,"***",ifelse(pv<.001,"**",ifelse(pv<.01,"*",ifelse(pv<.05,"'",""))))
+		sps[i] <- summary(LM)$coefficients[2,1]
+		spsprint[i] <- paste(round(sps[i],3),pv)
+		sdev[i] <- summary(LM)$coefficients[2,2]
+	}
+	legend("topright",col=cols,lwd=2,legend=paste(ages,", slope = ",spsprint,sep=""))
+	cty <- unique(cty)
+	return(list(sps=sps,sdev=sdev))
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-ages <- 12:24
-library(grDevices)
-colsR <- colorRampPalette(c("green","yellow","magenta","blue"))
-cols <- colsR(length(ages))
-sdev <- spsprint <- sps <- cty <- c()
-par("xaxs"="i","yaxs"="i")
-plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(20,80,by=20),col="white")
-abline(h=seq(20,80,by=20),col="white")
-for (i in 1:length(ages)){
-	x <- 100*(1-DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
-	y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
-	ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"country"]
-	yri <- DATA[DATA$age==ages[i] & DATA$sex=="Female" & DATA$round==2000,"year"]
-	ctyi <- paste(ctyi,yri,sep="")
-	nax <- which(is.na(x)) ; nay <-  which(is.na(y))
-	nas <- unique(c(nax,nay))
-	if (length(nas)>0){	ctyi <- ctyi[-nas]}
-	cty <- c(cty,ctyi)
-	minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
-	LM <- lm(y~x)
-	xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
-	segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
-	points(x,y,col=paste(cols[i],45,sep=""),pch=19)
-	pv <- summary(LM)$coefficients[2,4] # p val
-	pv <- ifelse(pv<.0001,"***",ifelse(pv<.001,"**",ifelse(pv<.01,"*",ifelse(pv<.05,"'",""))))
-	sps[i] <- summary(LM)$coefficients[2,1]
-	spsprint[i] <- paste(round(sps[i],3),pv)
-	sdev[i] <- summary(LM)$coefficients[2,2]
-}
-legend("topright",col=cols,lwd=2,legend=paste(ages,", slope = ",spsprint,sep=""))
-cty <- unique(cty)
+f10out <- f10()
 @
 \caption{Females, 2000, \% Enrolled vs \% with child, single-age OLS lines (88 country obs)}
 \label{femalechildallOLS}
@@ -479,8 +537,8 @@ Figure \ref{femalechildderiv} summarizes Figure \ref{femalechildallOLS} nicely: 
 
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,sps,type='l',ylim=c(-3.5,0),xlab="age",ylab="First Derivative")
-polygon(c(12:24,24:12),c(sps-1.96*sdev,rev(sps+1.96*sdev)),col="#00000030")
+plot(12:24,f10out$sps,type='l',ylim=c(-3.5,1),xlab="age",ylab="First Derivative")
+polygon(c(12:24,24:12),c(f10out$sps-1.96*f10out$sdev,rev(f10out$sps+1.96*f10out$sdev)),col="#00000030")
 abline(h=c(0,-.5,-1,-2),lty=2)
 @
 \caption{Females, 2000, \% Enrolled vs \% in union, change in slope of age-specific OLS}
@@ -492,86 +550,99 @@ abline(h=c(0,-.5,-1,-2),lty=2)
 
 Figure \ref{maleunion3lines} repeats the bivariate exercise for males enrolled versus in union, we see that age 16 shows a very significant relationship, while ages 20 and 24 show no relationship. The age-specific OLS to follow will provide more information about what's going on.
 
+<<>>=
+f11 <- function(){
+	ages <- c(16,20,24)
+	cols <- c("#CD2626","#66CD00","#6495ED")
+	par("xaxs"="i","yaxs"="i")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="% enrolled",xlab="% in union")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(20,80,by=20),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+# iterates over ages,cols: fit line, calc conf, plot band, then line, then points
+	cty <- c()
+	for (i in 1:3){
+		x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_union"]
+		y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_school"]
+		ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"country"]
+		yri <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"year"]
+		ctyi <- paste(ctyi,yri,sep="")
+		nax <- which(is.na(x)) ; nay <-  which(is.na(y))
+		nas <- unique(c(nax,nay))
+		if (length(nas)>0){	ctyi <- ctyi[-nas]}
+		cty <- c(cty,ctyi)
+		minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
+		LM <- lm(y~x) # OLS
+		xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
+		clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
+		#paste(cols[i],15,sep="")
+		polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
+		lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
+		lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		points(x,y,col=cols[i],pch=19)
+	}
+	legend("topright",lwd=2,col=cols,legend=paste("age",ages))
+	cty <- unique(cty)
+	return(cty)
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-# produce figure
-ages <- c(16,20,24)
-cols <- c("#CD2626","#66CD00","#6495ED")
-par("xaxs"="i","yaxs"="i")
-plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="% enrolled",xlab="% in union")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(20,80,by=20),col="white")
-abline(h=seq(20,80,by=20),col="white")
-# iterates over ages,cols: fit line, calc conf, plot band, then line, then points
-cty <- c()
-for (i in 1:3){
-	x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_union"]
-	y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_school"]
-	ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"country"]
-	yri <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"year"]
-	ctyi <- paste(ctyi,yri,sep="")
-	nax <- which(is.na(x)) ; nay <-  which(is.na(y))
-	nas <- unique(c(nax,nay))
-	if (length(nas)>0){	ctyi <- ctyi[-nas]}
-	cty <- c(cty,ctyi)
-	minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
-	LM <- lm(y~x) # OLS
-	xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
-	clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
-	#paste(cols[i],15,sep="")
-	polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
-	lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
-	lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
-	segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
-	points(x,y,col=cols[i],pch=19)
-}
-legend("topright",lwd=2,col=cols,legend=paste("age",ages))
-cty <- unique(cty)
+cty11 <- f11()
 @
-\caption{Males, 2000, \% Enrolled vs \% in union, 3 ages (93 country observations)}
+\caption{Males, 2000, \% Enrolled vs \% in union, 3 ages (\Sexpr{cty11} country observations)}
 \label{maleunion3lines}
 \end{figure}
 
 \pagebreak
 This is where the story is at: For males there is a significant negative relationship between aggregate school enrollment and percentage of the population in union \textit{until} age 17. The greens and yellows change their intercept, but appear rather parallel. The following derivative plot will probably tell us what's going on. In short, we can \textit{suspect} that role incompatibility is strong among young males (perhaps under rule of shotgun?), and rather non-existent from the late-teens and onward. Later, we'll disaggregate by enrollment and see whether this is just a heterogeneity trick. 
 
+<<>>=
+f12 <- function(){
+	ages <- 12:24
+	library(grDevices)
+	colsR <- colorRampPalette(c("green","yellow","magenta","blue"))
+	cols <- colsR(length(ages))
+	sdev <- spsprint <- sps <- cty <- c()
+	par("xaxs"="i","yaxs"="i")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(20,80,by=20),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 1:length(ages)){
+		x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_union"]
+		y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_school"]
+		ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"country"]
+		yri <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"year"]
+		ctyi <- paste(ctyi,yri,sep="")
+		nax <- which(is.na(x)) ; nay <-  which(is.na(y))
+		nas <- unique(c(nax,nay))
+		if (length(nas)>0){	ctyi <- ctyi[-nas]}
+		cty <- c(cty,ctyi)
+		minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
+		LM <- lm(y~x)
+		xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		points(x,y,col=paste(cols[i],45,sep=""),pch=19)
+		pv <- summary(LM)$coefficients[2,4] # p val
+		pv <- ifelse(pv<.0001,"***",ifelse(pv<.001,"**",ifelse(pv<.01,"*",ifelse(pv<.05,"'",""))))
+		sps[i] <- summary(LM)$coefficients[2,1]
+		spsprint[i] <- paste(round(sps[i],3),pv)
+		sdev[i] <- summary(LM)$coefficients[2,2]
+	}
+	legend("topright",col=cols,lwd=2,legend=paste(ages,", slope = ",spsprint,sep=""))
+	cty <- unique(cty)
+	return(cty)
+}
+@
+
 \begin{figure}
 <<fig=TRUE>>=
-ages <- 12:24
-library(grDevices)
-colsR <- colorRampPalette(c("green","yellow","magenta","blue"))
-cols <- colsR(length(ages))
-sdev <- spsprint <- sps <- cty <- c()
-par("xaxs"="i","yaxs"="i")
-plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
-extr <- par("usr")
-rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
-abline(v=seq(20,80,by=20),col="white")
-abline(h=seq(20,80,by=20),col="white")
-for (i in 1:length(ages)){
-	x <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_union"]
-	y <- 100*DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"prop_school"]
-	ctyi <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"country"]
-	yri <- DATA[DATA$age==ages[i] & DATA$sex=="Male" & DATA$round==2000,"year"]
-	ctyi <- paste(ctyi,yri,sep="")
-	nax <- which(is.na(x)) ; nay <-  which(is.na(y))
-	nas <- unique(c(nax,nay))
-	if (length(nas)>0){	ctyi <- ctyi[-nas]}
-	cty <- c(cty,ctyi)
-	minx <- min(x,na.rm=T) ; maxx <- max(x,na.rm=T)
-	LM <- lm(y~x)
-	xref <- data.frame(x=seq(from=minx, to=maxx, length.out=25))
-	segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
-	points(x,y,col=paste(cols[i],45,sep=""),pch=19)
-	pv <- summary(LM)$coefficients[2,4] # p val
-	pv <- ifelse(pv<.0001,"***",ifelse(pv<.001,"**",ifelse(pv<.01,"*",ifelse(pv<.05,"'",""))))
-	sps[i] <- summary(LM)$coefficients[2,1]
-	spsprint[i] <- paste(round(sps[i],3),pv)
-	sdev[i] <- summary(LM)$coefficients[2,2]
-}
-legend("topright",col=cols,lwd=2,legend=paste(ages,", slope = ",spsprint,sep=""))
-cty <- unique(cty)
+cty <- f12()
 @
 \caption{Males, 2000, \% Enrolled vs \% in union, singles ages (66 country observations)}
 \label{maleunionallOLS}
@@ -583,7 +654,7 @@ Note first that the confidence bands are all-around wider for males than they we
 
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,sps,type='l',ylim=c(-3.5,0),xlab="age",ylab="First Derivative")
+plot(12:24,sps,type='l',ylim=c(-3.5,1),xlab="age",ylab="First Derivative")
 polygon(c(12:24,24:12),c(sps-1.96*sdev,rev(sps+1.96*sdev)),col="#00000030")
 abline(h=c(0,-.5,-1,-2),lty=2)
 @
@@ -597,7 +668,8 @@ All of the above plots are based on aggregate data, and so beg the question as t
 
 <<>>=
 # readin data for second round of graphs
-DATA <- read.table("E:\\WRITING\\ViennaDec2011\\proportions_att.txt",header=T,sep="\t",na.strings = ".")
+DATA <- read.table("DATA/FIGURE3.txt",header=T,sep="\t",na.strings = ".")
+#DATA <- read.table("E:\\WRITING\\ViennaDec2011\\proportions_att.txt",header=T,sep="\t",na.strings = ".")
 DATA$country <- as.character(DATA$country)
 DATA$sex <- as.character(DATA$sex)
 @
@@ -864,7 +936,8 @@ par(mar=omar)
 In the prior meeting, Albert mused that proportions in union while in school probably have a close relationship with proportions married in the population as a whole. Let's take a quick look (mixing datasets for a moment). Figure \ref{femaleinschoolinunionvsoverallinunion} shows a strong and significant positive relationship between the overall porportion in union and the proportion in union and in school. Next we'll see how the relationship changes over age, and how linear the relationship really is. 
 
 <<>>=
-DATA2 <- read.table("E:\\WRITING\\ViennaDec2011\\proportions.txt",header=T,sep="\t",na.strings = ".")
+DATA2 <- read.table("DATA\\FIGURE1_2.txt",header=T,sep="\t",na.strings = ".")
+#DATA2 <- read.table("E:\\WRITING\\ViennaDec2011\\proportions.txt",header=T,sep="\t",na.strings = ".")
 DATA2$country <- as.character(DATA2$country)
 DATA2$sex <- as.character(DATA2$sex)
 @
@@ -929,9 +1002,9 @@ polygon(c(12:24,24:12),c(sps-1.96*sdev,rev(sps+1.96*sdev)),col="#00000030")
 abline(h=c(0,-.5,-1,-2),lty=2)
 lines(12:24,rs,col="green",lwd=2)
 par(new=T)
-plot(12:24,obs,axes=F,type="s",col="red",lwd=2,ylim=c(0,100),ylab="",xlab="")
+plot(12:24,obs,axes=F,type="s",col="red",lwd=2,ylim=c(0,130),ylab="",xlab="")
 axis(4)
-legend(0,-12,col=c("green","red"),lwd=2,legend=c("r2 (left)","observations (right)"))
+legend(12,-12,col=c("green","red"),lwd=2,legend=c("r2 (left)","observations (right)"),xpd=TRUE)
 @
 \caption{Females, 2000, \% Enrolled vs \% in union, change in slope of age-specific OLS}
 \label{femaleinschoolinunionvsoverallinunionderiv}
