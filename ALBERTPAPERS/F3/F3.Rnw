@@ -1,0 +1,304 @@
+\SweaveOpts{prefix.string=figs/F3}
+% [Albert]: Boxplots \% in union, \% with children by attendance status 
+% (attending not attending) by age. Separate graphs for men and women.
+
+\section{Figure 3 boxplots}
+%------------------------------------------------------
+% Female boxplots split on school attendance
+%------------------------------------------------------
+
+\subsection{Figure 3, Female With Child and In Union by Enrollment, single ages}
+All of the above plots are based on aggregate data, and so beg the question as to how much these patterns hold when looking within groups: how much of the aggregate pattern is being determined by compositional effects? We first divide the data into two groups- those attending and those not attending and look again at proportions in union and that have children, females then males. Figure \ref{femalesplitbox1} makes obvious the separation between those in school and out of school in terms of the timing of union formation and childbearing. This plot was based on the same observations as previous boxplots, and this explains the irregularity between the in union and childbearing bars. ''In union'' should always be a bit higher than ''has child'', both in and out of school. Joan has verified that this is the case when looking only at the countries that have information for both variables. I will not redo the observation counts plot, but do include a noise plot for reference in Figure \ref{femalesplitbox1noise}.
+
+<<>>=
+DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure3.tab",header=T,sep="\t",na.strings = ".")
+DATA$country <- as.character(DATA$country)
+DATA$sex <- as.character(DATA$sex)
+@
+
+<<>>=
+Fig3_1 <- function(){
+	cols <- c("#EEC900","#FF69B4","#CD5B45","#8B008B")
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+# iterate over ages
+	for (i in 12:24){
+		###################
+		# in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==1,"prop_union2"]
+		x <- rep(i-.3,length(y))
+		xmid <- -.37
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3],col=cols[1]) #IQR box
+		segments(i+xmid-.1,FN[2],i+xmid+.1,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut,lty=2,col=cols[1]) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut,lty=2,col=cols[1]) # upper whisker
+		points(c(i+xmid,i+xmid),c(mincut,maxcut),pch=19,col=cols[1],cex=.5)
+		###################
+		# in school, has child
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==1,"prop_child2"]
+		x <- rep(i-.3,length(y))
+		xmid <- -.12
+		#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:"#FF69B4"
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3],col=cols[2]) #IQR box
+		segments(i+xmid-.1,FN[2],i+xmid+.1,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut,lty=2,col=cols[2]) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut,lty=2,col=cols[2]) # upper whisker
+		points(c(i+xmid,i+xmid),c(mincut,maxcut),pch=19,col=cols[2],cex=.5)
+		###################
+		# not in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==0,"prop_union2"]
+		x <- rep(i-.3,length(y))
+		xmid <- .12
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3],col=cols[3]) #IQR box
+		segments(i+xmid-.1,FN[2],i+xmid+.1,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut,lty=2,col=cols[3]) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut,lty=2,col=cols[3]) # upper whisker
+		points(c(i+xmid,i+xmid),c(mincut,maxcut),pch=19,col=cols[3],cex=.5)
+		###################
+		# not in school, has child
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==0,"prop_child2"]
+		x <- rep(i-.3,length(y))
+		xmid <- .37
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3],col=cols[4]) #IQR box
+		segments(i+xmid-.1,FN[2],i+xmid+.1,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut,lty=2,col=cols[4]) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut,lty=2,col=cols[4]) # upper whisker
+		points(c(i+xmid,i+xmid),c(mincut,maxcut),pch=19,col=cols[4],cex=.5)
+	}
+	legend(12,-12,fill=cols,legend=c("in school in union","in school has child",
+					"not in school in union","not in school has child"),xpd=T)
+}
+@
+
+\begin{figure}
+<<fig=TRUE>>=
+Fig3_1()
+@
+\label{femalesplitbox1}
+\end{figure}
+
+\pagebreak
+%------------------------------------------------------
+% Female noiseplot, split on school attendance
+%------------------------------------------------------
+\subsubsection{Figure 3b, Female With Child and In Union by Enrollment, single ages, all observations}
+Figure \ref{femalesplitbox1noise} plots the same data as the prior plot, but includes points for all country observations. In this case there are certainly more observations falling outside of the stems. This might be explicable by sample size: it will be worth comparing this with the case count tables. Specifically, the two high points for girls in school and with children at age 12 and 13 are Iran, with more than 5\% each. Out of school and with child at age 12 is also Iran, with almost 40\%, and Iran and Thailand at age 13. I'm now thinking that for those countries where we include various samples for the year 2000 round, e.g. 1998 and 2001 DHS surveys, we ought to think of pooling these into a single 2000 round sample for our purposes.  
+
+<<>>=
+Fig3_1b <- function(){
+	cols <- c("#EEC900","#FF69B4","#CD5B45","#8B008B")
+	colst <- c("#EEC90040","#FF69B440","#CD5B4540","#8B008B40")
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+# iterate over ages
+	for (i in 12:24){
+		###################
+		# in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==1,"prop_union2"]
+		xmid <- -.37
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut) # upper whisker
+		points(jitter(rep(i,length(y))+xmid,amount=.04),y,col=colst[1],pch=19)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3]) #IQR box
+		###################
+		# in school, has child
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==1,"prop_child2"]
+		xmid <- -.12
+		#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut) # upper whisker
+		points(jitter(rep(i,length(y))+xmid,amount=.04),y,col=colst[2],pch=19)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3]) #IQR box
+		###################
+		# not in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==0,"prop_union2"]
+		xmid <- .12
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut) # upper whisker
+		points(jitter(rep(i,length(y))+xmid,amount=.04),y,col=colst[3],pch=19)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3]) #IQR box
+		###################
+		# not in school, has child
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000 & DATA$school==0,"prop_child2"]
+		xmid <- .37
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+xmid,FN[1],i+xmid,mincut) # lower whisker
+		segments(i+xmid,FN[3],i+xmid,maxcut) # upper whisker
+		points(jitter(rep(i,length(y))+xmid,amount=.04),y,col=colst[4],pch=19)
+		rect(i+xmid-.1,FN[1],i+xmid+.1,FN[3]) #IQR box
+	}
+	legend(12,-12,fill=cols,legend=c("in school in union","in school has child",
+					"not in school in union","not in school has child"),xpd=T)
+}
+@
+
+\begin{figure}
+<<fig=TRUE>>=
+Fig3_1b()
+@
+\label{femalesplitbox1noise}
+\end{figure}
+
+\pagebreak
+%------------------------------------------------------
+% Male boxplot, split on school attendance
+%------------------------------------------------------
+\subsection{Figure 3, Male In Union by Enrollment, single ages}
+For males, again we are unfortuneately limited to union status. Figure \ref{malesplitbox} does not contain many surprises, except for too many zeros in the upper ages; we need to look at tables to see which countries are the culprits, and possibly evaluate the data. Differences in union status based on school attendance are clear in all ages, but only strongly separate starting around age 17. Point made.
+
+
+<<>>=
+Fig3_2 <- function(){
+	omar <- par("mar")
+	cols <- c("#EEC900","#CD5B45")
+	QuantilesMat <- matrix(ncol=4,nrow=13)
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% in union",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 12:24){
+		###################
+		# in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000 & DATA$school==1,"prop_union2"]
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i-.3,FN[1],i-.1,FN[3],col=cols[1]) #IQR box
+		segments(i-.3,FN[2],i-.1,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.2,FN[1],i-.2,mincut,lty=2,col=cols[1]) # lower whisker
+		segments(i-.2,FN[3],i-.2,maxcut,lty=2,col=cols[1]) # upper whisker
+		points(c(i-.2,i-.2),c(mincut,maxcut),pch=19,col=cols[1],cex=.5)
+		###################
+		# not in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000 & DATA$school==0,"prop_union2"]
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i+.1,FN[1],i+.3,FN[3],col=cols[2])
+		segments(i+.1,FN[2],i+.3,FN[2])
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+.2,FN[1],i+.2,mincut,lty=2,col=cols[2])
+		segments(i+.2,FN[3],i+.2,maxcut,lty=2,col=cols[2])
+		points(c(i+.2,i+.2),c(mincut,maxcut),pch=19,col=cols[2],cex=.5)
+	}
+	legend(12,-12,fill=cols,legend=c("in school","not in school"),xpd=T)
+	par(mar=omar)
+}
+@
+
+\begin{figure}
+<<fig=TRUE>>=
+Fig3_2()
+@
+\label{malesplitbox}
+\end{figure}
+
+\pagebreak
+%------------------------------------------------------
+% Male noiseplot, split on school attendance
+%------------------------------------------------------
+\subsubsection{Figure 3b, Male In Union by Enrollment, single ages, all observations}
+Figure \ref{malesplitbox1noise} displays the observation distribution behind the prior boxplot. Strange things, probably sample size issues, are happening in the lower ages. Countries with greater than 10\% of males in union and in school are Senegal (age 12 and 13), Rwanda (13); and out of school age 12 but higher than 10\% married are Malawi, Rwanda and Senegal, and at age 13 the same countries plus Thailand. The consistency between ages almost suggests that this might not be a mistake, but I'm guess that these proportions are based on much less than 50 individuals (12-year old males in and out of school).
+
+<<>>=
+Fig3_2b <- function(){
+	omar <- par("mar")
+	cols <- c("#EEC900","#CD5B45")
+	colst <- c("#EEC90040","#CD5B4540")
+	QuantilesMat <- matrix(ncol=4,nrow=13)
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(11.5,24.5),ylim=c(0,100),ylab="\\% in union",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 12:24){
+		###################
+		# in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000 & DATA$school==1,"prop_union2"]
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		points(jitter(rep(i,length(y))-.2,amount=.04),y,col=colst[1],pch=19)
+		rect(i-.3,FN[1],i-.1,FN[3]) #IQR box
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.2,FN[1],i-.2,mincut) # lower whisker
+		segments(i-.2,FN[3],i-.2,maxcut) # upper whisker
+		###################
+		# not in school, in union
+		###########
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000 & DATA$school==0,"prop_union2"]
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		points(jitter(rep(i,length(y))+.2,amount=.04),y,col=colst[2],pch=19)
+		rect(i+.1,FN[1],i+.3,FN[3])
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i+.2,FN[1],i+.2,mincut)
+		segments(i+.2,FN[3],i+.2,maxcut)
+		
+	}
+	legend(12,-12,fill=cols,legend=c("in school","not in school"),xpd=T)
+	par(mar=omar)
+}
+@
+\begin{figure}
+<<fig=TRUE>>=
+Fig3_2b()
+@
+\caption{Males, 2000, \% in union by school attendance status}
+
+\end{figure}
+
+\pagebreak
