@@ -1,9 +1,9 @@
 \SweaveOpts{prefix.string=figs/F7}
+\tikzset{font=\small}
 % Scatterplots \%  in union total population by \% in union among those attending (horitzontal)
 % all ages and use regressions lines for each age (as in Figur 2). Separate by sex.
 
 \section{Figure 7 scatterplot, Females in union and in school vs in union total population}
-In the prior meeting, Albert mused that proportions in union while in school probably have a close relationship with proportions married in the population as a whole. Let's take a quick look (mixing datasets for a moment). Figure \ref{femaleinschoolinunionvsoverallinunion} shows a strong and significant positive relationship between the overall porportion in union and the proportion in union and in school. Next we'll see how the relationship changes over age, and how linear the relationship really is. 
 
 <<>>=
 DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure7.tab",header=T,sep="\t",na.strings = ".")
@@ -59,7 +59,7 @@ Fig7 <- function(){
 Fig7out <- Fig7()
 ctyFig7 <- Fig7out$cty
 @
-\label{figure6unionscatterOLS}
+\label{Fig7}
 \end{figure}
 
 \pagebreak
@@ -69,9 +69,9 @@ ctyFig7 <- Fig7out$cty
 %------------------------------------------------------
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,Fig7out$sps,type='l',xlab="age",ylab="First Derivative",ylim=c(0,2.5))
+plot(12:24,Fig7out$sps,type='l',xlab="Age",ylab="First Derivative",ylim=c(0,2.5))
 polygon(c(12:24,24:12),c(Fig7out$sps-1.96*Fig7out$sdev,rev(Fig7out$sps+1.96*Fig7out$sdev)),col="#00000030")
 abline(h=c(0,.5,1,1.5,2),lty=2)
 @
-\label{figure6unionscatterOLSderiv}
+\label{Fig7b}
 \end{figure}

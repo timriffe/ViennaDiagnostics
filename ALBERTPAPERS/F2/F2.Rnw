@@ -1,4 +1,5 @@
 \SweaveOpts{prefix.string=figs/F2}
+\tikzset{font=\small}
 % [Albert]: Scatterplots. \%enrolled (vertical axis) by \% with children 
 % (horitzonal axis) by age (one regression line for each age showing r2
 % and the slopes with significance).
@@ -18,9 +19,10 @@ Starting always with females, we first look at the bivariate relationship betwee
 <<>>=
 Fig2_1 <- function(){
 	ages <- c(16,20,24)
-	cols <- c("#CD2626","#66CD00","#6495ED")
+	cols <- c("#CD262660","#66CD0060","#6495ED60")
+	colsl <- c("#CD2626","#66CD00","#6495ED")
 	par("xaxs"="i","yaxs"="i")
-	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="% enrolled",xlab="% in union")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
 	extr <- par("usr")
 	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
 	abline(v=seq(20,80,by=20),col="white")
@@ -43,12 +45,12 @@ Fig2_1 <- function(){
 		clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
 		#paste(cols[i],15,sep="")
 		polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
-		lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
-		lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
-		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		lines(cbind(xref,clim$lwr), col=colsl[i], lty="dashed")
+		lines(cbind(xref,clim$upr), col=colsl[i], lty="dashed")
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=colsl[i],lwd=2)
 		points(x,y,col=cols[i],pch=19)
 	}
-	legend("topright",lwd=2,col=cols,legend=paste("age",ages))
+	legend("topright",lwd=2,col=colsl,legend=paste("age",ages))
 	cty <- unique(cty)
 	return(cty)
 }
@@ -58,7 +60,7 @@ Fig2_1 <- function(){
 <<fig=TRUE>>=
 cty2_1 <- Fig2_1()
 @
-\label{femaleunion3lines}
+\label{Fig2_1}
 \end{figure}
 
 \pagebreak
@@ -112,7 +114,7 @@ Fig2_1b <- function(){
 <<fig=TRUE>>=
 Fig2_1out <- Fig2_1b()
 @
-\label{femaleunionallOLS}
+\label{Fig2_1b}
 \end{figure}
 
 \pagebreak
@@ -120,15 +122,15 @@ Fig2_1out <- Fig2_1b()
 % Female ages-specific OLS slopes, Enrollment vs In Union
 %------------------------------------------------------
 \subsubsection{Figure 2, Females, \% Enrolled vs \% in union, change in slope of age-specific OLS}
-Questions were raised about the age pattern of the \textit{slope} of the above age-specific OLS lines, displayed in Figure \ref{femaleunionderiv}. This figure, although uncommon, has a straighforward interpretation: Its steepest segments are the ages where change accelerates the fastest (the second derivative). In the first place, these are from ages 14-16, followed in importance by ages 16-19. Eyeball compare this with colorful Figure \ref{femaleunionallOLS} and this becomes apparent. Another useful reference is the point at which this curve crosses -1 on the y-axis. This age, somewhere between 16 and 17, is the age at which 10\% higher average enrollment predicts 10\% lower probability of being in union- \textit{across} countries and \textit{within} that age range. Where the line crosses -2, enrollment is to be understood as being very predictive: 10\% higher enrollment in a particular country predicts 20\% lower probability of finding oneself in union: this is at age 15, but also conceivably the case (within confidence bands) at earlier ages as well. By around age 18, the strength of relationship has slacked off to -.5, meaning that 10\% higher enrollment predicts a meer 5\% lower chance of being in union, and this relationship remains negative and significantly different from zero until the highest age considered in our study, age 24.
+Questions were raised about the age pattern of the \textit{slope} of the above age-specific OLS lines, displayed in Figure \ref{Fig2_1c}. This figure, although uncommon, has a straighforward interpretation: Its steepest segments are the ages where change accelerates the fastest (the second derivative). In the first place, these are from ages 14-16, followed in importance by ages 16-19. Eyeball compare this with colorful Figure \ref{Fig2_1b} and this becomes apparent. Another useful reference is the point at which this curve crosses -1 on the y-axis. This age, somewhere between 16 and 17, is the age at which 10\% higher average enrollment predicts 10\% lower probability of being in union- \textit{across} countries and \textit{within} that age range. Where the line crosses -2, enrollment is to be understood as being very predictive: 10\% higher enrollment in a particular country predicts 20\% lower probability of finding oneself in union: this is at age 15, but also conceivably the case (within confidence bands) at earlier ages as well. By around age 18, the strength of relationship has slacked off to -.5, meaning that 10\% higher enrollment predicts a meer 5\% lower chance of being in union, and this relationship remains negative and significantly different from zero until the highest age considered in our study, age 24.
 
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,Fig2_1out$sps,type='l',ylim=c(-3.5,0),xlab="age",ylab="First Derivative")
+plot(12:24,Fig2_1out$sps,type='l',ylim=c(-3.5,0),xlab="Age",ylab="First Derivative")
 polygon(c(12:24,24:12),c(Fig2_1out$sps-1.96*Fig2_1out$sdev,rev(Fig2_1out$sps+1.96*Fig2_1out$sdev)),col="#00000030")
 abline(h=c(0,-.5,-1,-2),lty=2)
 @
-\label{femaleunionderiv}
+\label{Fig2_1c}
 \end{figure}
 
 \pagebreak
@@ -141,7 +143,8 @@ We repeat the above three plots again for females that have had a child. The cou
 <<>>=
 Fig2_2 <- function(){
 	ages <- c(16,20,24)
-	cols <- c("#CD2626","#66CD00","#6495ED")
+	cols <- c("#CD262660","#66CD0060","#6495ED60")
+	colsl <- c("#CD2626","#66CD00","#6495ED")
 	par("xaxs"="i","yaxs"="i")
 	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% mother")
 	extr <- par("usr")
@@ -166,12 +169,12 @@ Fig2_2 <- function(){
 		clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
 		#paste(cols[i],15,sep="")
 		polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
-		lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
-		lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
-		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		lines(cbind(xref,clim$lwr), col=colsl[i], lty="dashed")
+		lines(cbind(xref,clim$upr), col=colsl[i], lty="dashed")
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=colsl[i],lwd=2)
 		points(x,y,col=cols[i],pch=19)
 	}
-	legend("topright",lwd=2,col=cols,legend=paste("age",ages))
+	legend("topright",lwd=2,col=colsl,legend=paste("age",ages))
 	cty <- unique(cty)
 	return(cty)
 }
@@ -181,7 +184,7 @@ Fig2_2 <- function(){
 <<fig=TRUE>>=
 Fig2_2cty <- Fig2_2()
 @
-\label{femalechild3lines}
+\label{Fig2_2}
 \end{figure}
 
 \pagebreak
@@ -189,7 +192,7 @@ Fig2_2cty <- Fig2_2()
 % Female Scatter, all ages, Enrollment vs Has Child
 %------------------------------------------------------
 \subsubsection{Figure 2, Females, \% Enrolled vs \% with Child, single ages}
-Likewise, why not fit an OLS line to each age separately, checking slope and significance. Is there at age at which the relationship between school enrollment and having had a child becomes or ceases to be significant? Yes: age 15. At ages 14 and under we see no significant relationship (in fact the slopes of those lines (greens) can be ignored altogether)- this is prior to and around the age of menarche, and there are likely very few cases in any dataset that would shed light on those ages. The single star at age 15 indicates a mere 90 \% significance, while all later ages are \textit{very significant}. Among the significant ages, the pattern is similar to that for union formation. In following, we plot the age pattern of the slopes of these colored lines.
+Likewise, why not fit an OLS line to each age separately, checking slope and significance. Is there at age at which the relationship between school enrollment and having had a child becomes or ceases to be significant? Yes: age 16. At ages 14 and under we see no significant relationship (in fact the slopes of those lines (greens) can be ignored altogether)- this is prior to and around the age of menarche, and there are likely very few cases in any dataset that would shed light on those ages. The single star at age 16 indicates a mere 90 \% significance, while all later ages are \textit{very significant}. Among the significant ages, the pattern is similar to that for union formation. In following, we plot the age pattern of the slopes of these colored lines.
 
 <<>>=
 Fig2_2b <- function(){
@@ -236,7 +239,7 @@ Fig2_2b <- function(){
 Fig2_2bout <- Fig2_2b()
 Fig2_2bcty <- Fig2_2bout$cty
 @
-\label{femalechildallOLS}
+\label{Fig2_2b}
 \end{figure}
 
 \pagebreak
@@ -244,15 +247,15 @@ Fig2_2bcty <- Fig2_2bout$cty
 % Female age-specific OLS slopes, Enrollment vs as Child
 %------------------------------------------------------
 \subsubsection{Figure 2, Females, \% Enrolled vs \% has child, change in slope of age-specific OLS}
-Figure \ref{femalechildderiv} summarizes Figure \ref{femalechildallOLS} nicely: nothing is significant until age 15. There is no dramatic weakening of relationship, as was the case with union formation. At age 16, there is a strong relationship (one for one) that is very significant. From age 18 onward, the strength of relationship is very similar to that of union formation, i.e. 10\% more enrollment predicts 5\% (or less) lower probability of having had a child. We do not worry about the very young ages, as that absence of significance is above all, physiologically determined. Culture can only stack on top of that, but even if childbearing were outright encouraged by some culture at age 13 or 14, we still wouldn't see a significant relationship, and we therefore have no evidence for or against the effects of school attendance in those ages. However, we know that being in union increases the odds of and generally preceeds childbearing, and the relationship between enrollment and union formation \textit{is} in the right direction and very significant in the young ages.
+Figure \ref{Fig2_2c} summarizes Figure \ref{Fig2_2b} nicely: nothing is significant until age 16. There is no dramatic weakening of relationship, as was the case with union formation. From age 18 onward, the strength of relationship is very similar to that of union formation, i.e. 10\% more enrollment predicts 5\% (or less) lower probability of having had a child. We do not worry about the very young ages, as that absence of significance is above all, physiologically determined. Culture can only stack on top of that, but even if childbearing were outright encouraged by some culture at age 13 or 14, we still wouldn't see a significant relationship, and we therefore have no evidence for or against the effects of school attendance in those ages. However, we know that being in union increases the odds of and generally preceeds childbearing, and the relationship between enrollment and union formation \textit{is} in the right direction and very significant in the young ages.
 
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,Fig2_2bout$sps,type='l',ylim=c(-3.5,1),xlab="age",ylab="First Derivative")
+plot(12:24,Fig2_2bout$sps,type='l',ylim=c(-3.5,1),xlab="Age",ylab="First Derivative")
 polygon(c(12:24,24:12),c(Fig2_2bout$sps-1.96*Fig2_2bout$sdev,rev(Fig2_2bout$sps+1.96*Fig2_2bout$sdev)),col="#00000030")
 abline(h=c(0,-.5,-1,-2),lty=2)
 @
-\label{femalechildderiv}
+\label{Fig2_2c}
 \end{figure}
 
 \pagebreak
@@ -260,14 +263,15 @@ abline(h=c(0,-.5,-1,-2),lty=2)
 %------------------------------------------------------
 % Male Scatter, 3 ages, Enrollment vs In Union
 %------------------------------------------------------
-Figure \ref{maleunion3lines} repeats the bivariate exercise for males enrolled versus in union, we see that age 16 shows a very significant relationship, while ages 20 and 24 show no relationship. The age-specific OLS to follow will provide more information about what's going on.
+Figure \ref{Fig2_3} repeats the bivariate exercise for males enrolled versus in union, we see that age 16 shows a very significant relationship, while ages 20 and 24 show no relationship. The age-specific OLS to follow will provide more information about what's going on.
 
 <<>>=
 Fig2_3 <- function(){
 	ages <- c(16,20,24)
-	cols <- c("#CD2626","#66CD00","#6495ED")
+	cols <- c("#CD262660","#66CD0060","#6495ED60")
+	colsl <- c("#CD2626","#66CD00","#6495ED")
 	par("xaxs"="i","yaxs"="i")
-	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="% enrolled",xlab="% in union")
+	plot(NULL,type="n",xlim=c(0,100),ylim=c(0,100),ylab="\\% enrolled",xlab="\\% in union")
 	extr <- par("usr")
 	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
 	abline(v=seq(20,80,by=20),col="white")
@@ -290,12 +294,12 @@ Fig2_3 <- function(){
 		clim <- as.data.frame(predict(LM, xref, level=0.95, interval="confidence")) # confidence limits
 		#paste(cols[i],15,sep="")
 		polygon(c(xref$x,rev(xref$x)),c(clim$lwr,rev(clim$upr)),col="#30303010",border="transparent")
-		lines(cbind(xref,clim$lwr), col=cols[i], lty="dashed")
-		lines(cbind(xref,clim$upr), col=cols[i], lty="dashed")
-		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=cols[i],lwd=2)
+		lines(cbind(xref,clim$lwr), col=colsl[i], lty="dashed")
+		lines(cbind(xref,clim$upr), col=colsl[i], lty="dashed")
+		segments(minx,LM$coef[1]+LM$coef[2]*minx,maxx,LM$coef[1]+LM$coef[2]*maxx,col=colsl[i],lwd=2)
 		points(x,y,col=cols[i],pch=19)
 	}
-	legend("topright",lwd=2,col=cols,legend=paste("age",ages))
+	legend("topright",lwd=2,col=colsl,legend=paste("age",ages))
 	cty <- unique(cty)
 	return(cty)
 }
@@ -305,7 +309,7 @@ Fig2_3 <- function(){
 <<fig=TRUE>>=
 Fig2_3cty <- Fig2_3()
 @
-\label{maleunion3lines}
+\label{Fig2_3}
 \end{figure}
 
 \pagebreak
@@ -360,7 +364,7 @@ Fig2_3b <- function(){
 Fig2_3bout <- Fig2_3b()
 Fig2_3cty <- Fig2_3bout$cty
 @
-\label{maleunionallOLS}
+\label{Fig2_3b}
 \end{figure}
 
 \pagebreak
@@ -372,11 +376,11 @@ Note first that the confidence bands are all-around wider for males than they we
 
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,Fig2_3bout$sps,type='l',ylim=c(-3.5,1),xlab="age",ylab="First Derivative")
+plot(12:24,Fig2_3bout$sps,type='l',ylim=c(-3.5,1),xlab="Age",ylab="First Derivative")
 polygon(c(12:24,24:12),c(Fig2_3bout$sps-1.96*Fig2_3bout$sdev,rev(Fig2_3bout$sps+1.96*Fig2_3bout$sdev)),col="#00000030")
 abline(h=c(0,-.5,-1,-2),lty=2)
 @
-\label{maleunionderiv}
+\label{Fig2_3c}
 \end{figure}
 
 \pagebreak

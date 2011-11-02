@@ -1,8 +1,10 @@
 \SweaveOpts{prefix.string=figs/F5}
+\tikzset{font=\small}
 % [Albert]: Scatterplots. \% enrolled total population (vertical) by \% with children among those 
 % attending (horitzontal) all ages and use regressions lines for each age (as in Figure 2)
 \section{Figure 5 scatterplot, Females enrolled total population vs with children among attending}
 
+No time yet to comment on Figure \ref{Fig5}.
 <<>>=
 DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure5.tab",header=T,sep="\t",na.strings = ".")
 DATA$country <- as.character(DATA$country)
@@ -57,7 +59,7 @@ Fig5 <- function(){
 Fig5out <- Fig5()
 ctyFig5 <- Fig5out$cty
 @
-\label{figure5scatterOLS}
+\label{Fig5}
 \end{figure}
 
 \pagebreak
@@ -67,16 +69,14 @@ ctyFig5 <- Fig5out$cty
 
 % TODO: get observations by age and r2 by age from above
 % TODO: 2) get same plots with consistent countries over age
-
-\pagebreak
 \subsection{Figure 5b, change in slope of age-specific OLS}
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,Fig5out$sps,type='l',xlab="age",ylab="First Derivative",ylim=c(-3,3))
+plot(12:24,Fig5out$sps,type='l',xlab="Age",ylab="First Derivative",ylim=c(-3,3))
 polygon(c(12:24,24:12),c(Fig5out$sps-1.96*Fig5out$sdev,rev(Fig5out$sps+1.96*Fig5out$sdev)),col="#00000030")
 abline(h=0,lty=2)
 @
-\label{figure5scatterOLSderiv}
+\label{Fig5b}
 \end{figure}
 
 \pagebreak

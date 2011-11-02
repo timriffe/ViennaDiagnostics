@@ -1,4 +1,5 @@
 \SweaveOpts{prefix.string=figs/F4}
+\tikzset{font=\small}
 % Boxplots \% simultaneity (\%in union AND with children among those 
 % attending in union OR with children) by age. Only for women. 
 \section{Figure 4 boxplot, Females, simultaneity parenthood and union, given either parent or in union}
@@ -46,15 +47,17 @@ Fig4 <- function(){
 <<fig=TRUE>>=
 QuantilesFig4 <- Fig4()
 @
-\caption{Females, 2000, \% both parent and in union, given either parent or in union.}
-\label{boxpfemsimultaneitybox}
+\label{Fig4}
 \end{figure}
 
 \pagebreak
-\subsubsection{Figure 4b, observation counts for Figure 4}
+
+\subsection{Figure 4b, observation counts for Figure 4}
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,QuantilesFig4[,4],type="s",xlab="age",ylab="observations",col="#7D26CD",ylim=c(0,100))
+plot(12:24,QuantilesFig4[,4],type="s",xlab="Age",ylab="observations",col="#7D26CD",ylim=c(0,100))
 @
-\label{boxplotfemales1obs}
+\label{Fig4b}
 \end{figure}
+
+\pagebreak

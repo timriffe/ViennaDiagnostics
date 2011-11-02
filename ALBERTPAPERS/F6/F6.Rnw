@@ -1,9 +1,10 @@
 \SweaveOpts{prefix.string=figs/F6}
+\tikzset{font=\small}
 % [Albert]: Scatterplots \%  with children total population by \% with children among those attending 
 % (horitzontal) all ages and use regressions lines for each age (as in Figur 2). Separate by sex.
 
 \section{Figure 6 scatterplot, Females with child and in school vs with child total population}
-In the prior meeting, Albert mused that proportions in union while in school probably have a close relationship with proportions married in the population as a whole. Let's take a quick look (mixing datasets for a moment). Figure \ref{femaleinschoolinunionvsoverallinunion} shows a strong and significant positive relationship between the overall porportion in union and the proportion in union and in school. Next we'll see how the relationship changes over age, and how linear the relationship really is. 
+In the prior meeting, Albert mused that proportions in union while in school probably have a close relationship with proportions married in the population as a whole. Let's take a quick look. Figure \ref{Fig6} shows a strong and significant positive relationship between the overall porportion in union and the proportion in union and in school. Next we'll see how the relationship changes over age, and how linear the relationship really is. 
 
 <<>>=
 DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure6.tab",header=T,sep="\t",na.strings = ".")
@@ -59,7 +60,7 @@ Fig6 <- function(){
 Fig6out <- Fig6()
 ctyFig6 <- Fig6out$cty
 @
-\label{figure6childscatterOLS}
+\label{Fig6}
 \end{figure}
 
 \pagebreak
@@ -71,9 +72,11 @@ ctyFig6 <- Fig6out$cty
 % TODO: 2) get same plots with consistent countries over age
 \begin{figure}
 <<fig=TRUE>>=
-plot(12:24,Fig6out$sps,type='l',xlab="age",ylab="First Derivative",ylim=c(0,3))
+plot(12:24,Fig6out$sps,type='l',xlab="Age",ylab="First Derivative",ylim=c(0,3))
 polygon(c(12:24,24:12),c(Fig6out$sps-1.96*Fig6out$sdev,rev(Fig6out$sps+1.96*Fig6out$sdev)),col="#00000030")
 abline(h=c(0,.5,1,1.5,2),lty=2)
 @
-\label{figure6childscatterOLSderiv}
+\label{Fig6b}
 \end{figure}
+
+\pagebreak
