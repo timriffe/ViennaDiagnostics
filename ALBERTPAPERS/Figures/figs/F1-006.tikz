@@ -1,0 +1,436 @@
+% Created by tikzDevice version 0.6.1 on 2011-11-15 15:33:38
+% !TEX encoding = UTF-8 Unicode
+\begin{tikzpicture}[x=1pt,y=1pt]
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{1.00,1.00,1.00}
+\fill[color=fillColor,] (0,0) rectangle (325.21,325.21);
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (325.21,325.21);
+\definecolor[named]{drawColor}{rgb}{0.19,0.00,0.33}
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 85.98, 96.00) -- (288.55, 96.00);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 85.98, 96.00) -- ( 85.98, 90.00);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (136.63, 96.00) -- (136.63, 90.00);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (187.27, 96.00) -- (187.27, 90.00);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (237.91, 96.00) -- (237.91, 90.00);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (288.55, 96.00) -- (288.55, 90.00);
+
+\node[color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 85.98, 72.00) {16%
+};
+
+\node[color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at (136.63, 72.00) {18%
+};
+
+\node[color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at (187.27, 72.00) {20%
+};
+
+\node[color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at (237.91, 72.00) {22%
+};
+
+\node[color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at (288.55, 72.00) {24%
+};
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00, 96.00) -- ( 48.00,289.21);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00, 96.00) -- ( 42.00, 96.00);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,134.64) -- ( 42.00,134.64);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,173.29) -- ( 42.00,173.29);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,211.93) -- ( 42.00,211.93);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,250.57) -- ( 42.00,250.57);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,289.21) -- ( 42.00,289.21);
+
+\node[rotate= 90.00,color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 36.00, 96.00) {0%
+};
+
+\node[rotate= 90.00,color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 36.00,134.64) {20%
+};
+
+\node[rotate= 90.00,color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 36.00,173.29) {40%
+};
+
+\node[rotate= 90.00,color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 36.00,211.93) {60%
+};
+
+\node[rotate= 90.00,color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 36.00,250.57) {80%
+};
+
+\node[rotate= 90.00,color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 36.00,289.21) {100%
+};
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00, 96.00) --
+	(301.21, 96.00) --
+	(301.21,289.21) --
+	( 48.00,289.21) --
+	( 48.00, 96.00);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (325.21,325.21);
+\definecolor[named]{drawColor}{rgb}{0.19,0.00,0.33}
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+
+\node[color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at (174.61, 48.00) {Age%
+};
+
+\node[rotate= 90.00,color=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 12.00,192.61) {\% population%
+};
+\end{scope}
+\begin{scope}
+\path[clip] ( 48.00, 96.00) rectangle (301.21,289.21);
+\definecolor[named]{drawColor}{rgb}{0.19,0.00,0.33}
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.92,0.92,0.92}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 48.00, 96.00) rectangle (301.21,289.21);
+\definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 35.34, 96.00) -- ( 35.34,289.21);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 85.98, 96.00) -- ( 85.98,289.21);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (136.63, 96.00) -- (136.63,289.21);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (187.27, 96.00) -- (187.27,289.21);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (237.91, 96.00) -- (237.91,289.21);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (288.55, 96.00) -- (288.55,289.21);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,134.64) -- (301.21,134.64);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,173.29) -- (301.21,173.29);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,211.93) -- (301.21,211.93);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 48.00,250.57) -- (301.21,250.57);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 53.06,223.43) rectangle ( 58.13,267.89);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 53.06,243.80) -- ( 58.13,243.80);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 55.60,223.43) -- ( 55.60,156.74);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 55.60,267.89) -- ( 55.60,287.71);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 55.60,156.74) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 55.60,287.71) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 63.19, 96.73) rectangle ( 68.26, 98.96);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 63.19, 97.26) -- ( 68.26, 97.26);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 65.73, 96.73) -- ( 65.73, 96.04);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 65.73, 98.96) -- ( 65.73,102.30);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 65.73, 96.04) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 65.73,102.30) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 78.39,206.21) rectangle ( 83.45,250.64);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 78.39,230.57) -- ( 83.45,230.57);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 80.92,206.21) -- ( 80.92,139.56);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 80.92,250.64) -- ( 80.92,282.93);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 80.92,139.56) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 80.92,282.93) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 88.51, 97.30) rectangle ( 93.58, 99.07);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 88.51, 97.78) -- ( 93.58, 97.78);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 91.05, 97.30) -- ( 91.05, 96.09);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] ( 91.05, 99.07) -- ( 91.05,101.72);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 91.05, 96.09) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 91.05,101.72) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (103.71,189.57) rectangle (108.77,230.10);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (103.71,212.09) -- (108.77,212.09);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (106.24,189.57) -- (106.24,128.77);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (106.24,230.10) -- (106.24,276.25);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (106.24,128.77) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (106.24,276.25) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (113.84, 96.97) rectangle (118.90,101.46);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (113.84, 99.23) -- (118.90, 99.23);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (116.37, 96.97) -- (116.37, 96.02);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (116.37,101.46) -- (116.37,108.19);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (116.37, 96.02) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (116.37,108.19) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (129.03,166.33) rectangle (134.09,201.90);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (129.03,181.15) -- (134.09,181.15);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (131.56,166.33) -- (131.56,123.34);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (131.56,201.90) -- (131.56,255.24);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (131.56,123.34) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (131.56,255.24) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (139.16, 98.80) rectangle (144.22,106.43);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (139.16,102.86) -- (144.22,102.86);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (141.69, 98.80) -- (141.69, 96.34);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (141.69,106.43) -- (141.69,117.86);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (141.69, 96.34) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (141.69,117.86) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (154.35,152.35) rectangle (159.41,187.38);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (154.35,165.69) -- (159.41,165.69);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (156.88,152.35) -- (156.88,112.14);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (156.88,187.38) -- (156.88,236.02);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (156.88,112.14) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (156.88,236.02) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (164.48,101.23) rectangle (169.54,114.54);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (164.48,108.65) -- (169.54,108.65);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (167.01,101.23) -- (167.01, 96.39);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (167.01,114.54) -- (167.01,134.49);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (167.01, 96.39) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (167.01,134.49) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (179.67,137.39) rectangle (184.74,168.02);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (179.67,151.93) -- (184.74,151.93);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (182.20,137.39) -- (182.20,112.61);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (182.20,168.02) -- (182.20,209.12);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (182.20,112.61) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (182.20,209.12) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (189.80,106.02) rectangle (194.86,128.04);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (189.80,118.57) -- (194.86,118.57);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (192.33,106.02) -- (192.33, 97.44);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (192.33,128.04) -- (192.33,160.40);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (192.33, 97.44) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (192.33,160.40) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (204.99,133.60) rectangle (210.06,163.24);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (204.99,143.49) -- (210.06,143.49);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (207.53,133.60) -- (207.53,110.30);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (207.53,163.24) -- (207.53,186.60);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (207.53,110.30) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (207.53,186.60) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (215.12,111.06) rectangle (220.19,139.11);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (215.12,127.26) -- (220.19,127.26);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (217.65,111.06) -- (217.65, 98.36);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (217.65,139.11) -- (217.65,171.57);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (217.65, 98.36) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (217.65,171.57) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (230.31,123.96) rectangle (235.38,151.73);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (230.31,134.17) -- (235.38,134.17);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (232.85,123.96) -- (232.85,108.59);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (232.85,151.73) -- (232.85,186.12);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (232.85,108.59) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (232.85,186.12) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (240.44,118.35) rectangle (245.51,153.56);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (240.44,136.57) -- (245.51,136.57);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (242.98,118.35) -- (242.98,100.01);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (242.98,153.56) -- (242.98,194.02);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (242.98,100.01) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (242.98,194.02) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (255.64,117.52) rectangle (260.70,142.94);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (255.64,123.69) -- (260.70,123.69);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (258.17,117.52) -- (258.17,106.28);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (258.17,142.94) -- (258.17,159.39);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (258.17,106.28) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (258.17,159.39) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (265.76,132.66) rectangle (270.83,170.41);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (265.76,156.33) -- (270.83,156.33);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (268.30,132.66) -- (268.30,103.90);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (268.30,170.41) -- (268.30,204.46);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (268.30,103.90) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (268.30,204.46) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (280.96,110.22) rectangle (286.02,133.94);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (280.96,118.77) -- (286.02,118.77);
+\definecolor[named]{drawColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (283.49,110.22) -- (283.49,103.19);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (283.49,133.94) -- (283.49,151.84);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (283.49,103.19) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (283.49,151.84) circle (  1.13);
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (291.09,143.28) rectangle (296.15,186.95);
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] (291.09,170.27) -- (296.15,170.27);
+\definecolor[named]{drawColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (293.62,143.28) -- (293.62,105.72);
+
+\draw[color=drawColor,dash pattern=on 4pt off 4pt ,line cap=round,line join=round,fill opacity=0.00,] (293.62,186.95) -- (293.62,219.52);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (293.62,105.72) circle (  1.13);
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] (293.62,219.52) circle (  1.13);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (325.21,325.21);
+\definecolor[named]{drawColor}{rgb}{0.19,0.00,0.33}
+\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill opacity=0.00,] ( 22.68, 70.88) rectangle ( 98.51, 34.88);
+\definecolor[named]{fillColor}{rgb}{0.93,0.79,0.00}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 31.68, 61.88) rectangle ( 38.88, 55.88);
+\definecolor[named]{fillColor}{rgb}{0.49,0.15,0.80}
+
+\draw[color=drawColor,line cap=round,line join=round,fill=fillColor,] ( 31.68, 49.88) rectangle ( 38.88, 43.88);
+
+\node[color=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 47.88, 55.44) {\% enrolled%
+};
+
+\node[color=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 47.88, 43.44) {\% union%
+};
+\end{scope}
+\end{tikzpicture}

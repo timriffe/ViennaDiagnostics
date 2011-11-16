@@ -1,0 +1,54 @@
+% setwd("C:\\Users\\triffe\\git\\ViennaPaper\\ALBERTPAPERS\\Table1") ; getwd()
+% this will need to be rerun as a .tex- choose latex under external tools.
+\documentclass[a4paper]{article}
+\usepackage[OT1]{fontenc}
+\usepackage{longtable}
+\usepackage{Sweave}
+\begin{document}
+
+\title{Availability Tables}
+\maketitle
+
+<<echo=FALSE,results=hide>>=
+library(Hmisc)
+DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure1_2.tab",header=T,sep="\t",na.strings = ".")
+DATA$country <- as.character(DATA$country)
+DATA$country <- sapply(DATA$country,gsub,pattern="ublic",replacement="")
+DATA$sex <- as.character(DATA$sex)
+Sample <- paste(DATA$country,DATA$year,sep=" ")
+DATA <- cbind(DATA,Sample)
+DATA <- DATA[DATA$year>=1998 & DATA$sex =="Female",]
+Sample <- as.character(DATA$Sample)
+# make tables for xtable output
+Table1c <- Table1b <- Table1a <- matrix(".",nrow=length(unique(Sample)),ncol=13,dimnames=list(sort(unique(Sample)),12:24))
+ages <- 12:24
+for (n in 1:nrow(Table1a)){
+	ind <- DATA$Sample==rownames(Table1a)[n]
+	agesavail_a <- DATA$age[ind][!is.na(DATA$prop_union[ind])]
+	agesavail_b <- DATA$age[ind][!is.na(DATA$prop_childless[ind])]
+	agesavail_c <- DATA$age[ind][!is.na(DATA$prop_school[ind])]
+	if (length(agesavail_a)>0){
+		Table1a[n,which(colnames(Table1a) %in% agesavail_a)] <- rep("X",length(agesavail_a))
+	}
+	if (length(agesavail_b)>0){
+		Table1b[n,which(colnames(Table1b) %in% agesavail_b)] <- rep("X",length(agesavail_b))
+	}
+	if (length(agesavail_c)>0){
+		Table1c[n,which(colnames(Table1c) %in% agesavail_c)] <- rep("X",length(agesavail_c))
+	}
+}
+@
+
+\pagebreak
+<<echo=FALSE,results=tex>>=
+a <- latex(Table1a,longtable=TRUE,file="",caption="Availability In Union")
+@
+\pagebreak
+<<echo=FALSE,results=tex>>=
+b <- latex(Table1b,longtable=TRUE,file="",caption="Availability Has Child")
+@
+\pagebreak
+<<echo=FALSE,results=tex>>=
+c <- latex(Table1c,longtable=TRUE,file="",caption="Availability In School")
+@
+\end{document}

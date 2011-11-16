@@ -1,0 +1,53 @@
+\section*{}
+\SweaveOpts{prefix.string=figs/F4}
+\tikzset{font=\small}
+
+<<>>=
+# read in data for Figure 4
+DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure4.tab",header=T,sep="\t",na.strings = ".")
+DATA$country <- as.character(DATA$country)
+@
+
+<<>>=
+Fig4 <- function(){
+	omar <- par("mar")
+	col <-"#53868B"			
+	QuantilesMat <- matrix(ncol=4,nrow=13)
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(14.5,24.5),ylim=c(0,100),ylab="\\% both roles given one role",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 15:24){
+		# in school
+		y <- 100*DATA[DATA$age==i & DATA$year>=1998,"perc_simult"]
+		#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		QuantilesMat[i-11,1:3] <- c(FN)
+		QuantilesMat[i-11,4] <- length(y[!is.na(y)])
+		rect(i-.2,FN[1],i+.2,FN[3],col=col) #IQR box
+		segments(i-.2,FN[2],i+.2,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i,FN[1],i,mincut,lty=2,col=col) # lower whisker
+		segments(i,FN[3],i,maxcut,lty=2,col=col) # upper whisker
+		points(c(i,i),c(mincut,maxcut),pch=19,col=col,cex=.5)
+	}
+	par(mar=omar)
+	colnames(QuantilesMat) <- c(".25",".5",".75","obs")
+	rownames(QuantilesMat)<- 12:24
+	return(QuantilesMat)
+}
+@
+
+\begin{figure}
+<<fig=TRUE>>=
+Fig4results <- Fig4()
+@
+\label{Fig4}
+\caption{Females currently in school, percentage simultaneously in union and with child given either of these two roles}
+\end{figure}
+
+\pagebreak

@@ -1,0 +1,151 @@
+\section*{}
+\SweaveOpts{prefix.string=figs/F1}
+\tikzset{font=\small}
+% [Albert]: Boxplots. \%enrolled, \% in union, \% with children by age and sex (one fig per sex). 
+<<>>=
+DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure1_2.tab",header=T,sep="\t",na.strings = ".")
+DATA$country <- as.character(DATA$country)
+DATA$sex <- as.character(DATA$sex)
+@
+
+%------------------------------------------------------
+% Female aggregate box plots, all cases
+%------------------------------------------------------
+
+<<>>=
+Fig1_females <- function(){
+	omar <- par("mar")
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(14.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
+	QuantilesMat <- matrix(ncol=8,nrow=13)
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 15:24){
+		# in school
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_school"]
+		x <- rep(i-.3,length(y))
+		#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		rect(i-.4,FN[1],i-.2,FN[3],col="#EEC900") #IQR box
+		segments(i-.4,FN[2],i-.2,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.3,FN[1],i-.3,mincut,lty=2,col="#EEC900") # lower whisker
+		segments(i-.3,FN[3],i-.3,maxcut,lty=2,col="#EEC900") # upper whisker
+		points(c(i-.3,i-.3),c(mincut,maxcut),pch=19,col="#EEC900",cex=.5)
+		if (i > 14){
+			# in union
+			y <- 100*DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_union"]
+			x <- rep(i,length(y))
+			#points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
+			FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+			QuantilesMat[i-11,1:3] <- c(FN)
+			QuantilesMat[i-11,4] <- length(y[!is.na(y)])
+			rect(i-.1,FN[1],i+.1,FN[3],col="#7D26CD")
+			segments(i-.1,FN[2],i+.1,FN[2])
+			maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+			mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+			segments(i,FN[1],i,mincut,lty=2,col="#7D26CD")
+			segments(i,FN[3],i,maxcut,lty=2,col="#7D26CD")
+			points(c(i,i),c(mincut,maxcut),pch=19,col="#7D26CD",cex=.5)
+			# mother
+			y <- 100*(1-DATA[DATA$age==i & DATA$sex=="Female" & DATA$round==2000,"prop_childless"])
+			x <- rep(i+.3,length(y))
+			#points(jitter(x,amount=.05),y,col="#FF69B460",pch=19)
+			FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+			QuantilesMat[i-11,5:7] <- c(FN)
+			QuantilesMat[i-11,8] <- length(y[!is.na(y)])
+			rect(i+.2,FN[1],i+.4,FN[3],col="#FF69B4")
+			segments(i+.2,FN[2],i+.4,FN[2]) 
+			maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+			mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+			segments(i+.3,FN[1],i+.3,mincut,lty=2,col="#FF69B4")
+			segments(i+.3,FN[3],i+.3,maxcut,lty=2,col="#FF69B4")
+			points(c(i+.3,i+.3),c(mincut,maxcut),pch=19,col="#FF69B4",cex=.5)
+		}
+	}
+	legend(13.5,-13.5,fill=c("#EEC900","#7D26CD","#FF69B4"),legend=c("\\% enrolled","\\% union","\\% parent"),xpd=T)
+	par(mar=omar)
+	colnames(QuantilesMat) <- c("union .25","union .5","union .75","obs","parent .25","parent .5","parent .75","obs")
+	rownames(QuantilesMat)<- 12:24
+	return(QuantilesMat)
+}
+@
+
+\begin{figure}
+<<fig=TRUE>>=
+Fig1_femalesresults <- Fig1_females()
+@
+\label{Fig1_1}
+\caption{Female aggregate proportions in school, in union and with child by age.}
+\end{figure}
+
+\pagebreak
+
+%------------------------------------------------------
+% Male aggregate box plots, all available cases
+%------------------------------------------------------
+
+<<>>=
+Fig1_males <- function(){
+	omar <- par("mar")
+	QuantilesMat <- matrix(ncol=4,nrow=13)
+	par("xaxs"="i","yaxs"="i",mar=c(8,4,3,2))
+	plot(NULL,type="n",xlim=c(14.5,24.5),ylim=c(0,100),ylab="\\% population",xlab="Age")
+	extr <- par("usr")
+	rect(extr[1],extr[3],extr[2],extr[4],col="#EBEBEB")
+	abline(v=seq(12,24,by=2),col="white")
+	abline(h=seq(20,80,by=20),col="white")
+	for (i in 15:24){
+		# in school
+		y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000,"prop_school"]
+		#points(jitter(x,amount=.05),y,col="#FF450050",pch=19)
+		# IQR box:
+		FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+		QuantilesMat[i-11,1:3] <- c(FN)
+		QuantilesMat[i-11,4] <- length(y[!is.na(y)])
+		rect(i-.3,FN[1],i-.1,FN[3],col="#EEC900") #IQR box
+		segments(i-.3,FN[2],i-.1,FN[2]) #median line
+		maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+		mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+		segments(i-.2,FN[1],i-.2,mincut,lty=2,col="#EEC900") # lower whisker
+		segments(i-.2,FN[3],i-.2,maxcut,lty=2,col="#EEC900") # upper whisker
+		points(c(i-.2,i-.2),c(mincut,maxcut),pch=19,col="#EEC900",cex=.5)
+		
+		if (i >14){
+			# in union
+			y <- 100*DATA[DATA$age==i & DATA$sex=="Male" & DATA$round==2000,"prop_union"]
+			#points(jitter(x,amount=.05),y,col="#7D26CD30",pch=19)
+			FN <- quantile(y,probs=c(.25,.5,.75),na.rm=TRUE)
+			rect(i+.1,FN[1],i+.3,FN[3],col="#7D26CD")
+			segments(i+.1,FN[2],i+.3,FN[2])
+			maxcut <- ifelse(max(y,na.rm=T) > FN[3]+1.5*abs(diff(range(FN))),FN[3]+1.5*abs(diff(range(FN))),max(y,na.rm=T))
+			mincut <- ifelse(min(y,na.rm=T) < FN[1]-1.5*abs(diff(range(FN))),FN[1]-1.5*abs(diff(range(FN))),min(y,na.rm=T))
+			segments(i+.2,FN[1],i+.2,mincut,lty=2,col="#7D26CD")
+			segments(i+.2,FN[3],i+.2,maxcut,lty=2,col="#7D26CD")
+			points(c(i+.2,i+.2),c(mincut,maxcut),pch=19,col="#7D26CD",cex=.5)
+		}
+	}
+	legend(13.5,-13,fill=c("#EEC900","#7D26CD"),legend=c("\\% enrolled","\\% union"),xpd=T)
+	par(mar=omar)
+	colnames(QuantilesMat) <- c("union .25","union .5","union .75","obs")
+	rownames(QuantilesMat)<- 12:24
+	return(QuantilesMat)
+}
+@
+
+\begin{figure}
+<<fig=TRUE>>=
+Fig1_malesresuls <- Fig1_males()
+@
+\label{Fig1_2}
+\caption{Male aggregate proportions in school, in union by age.}
+\end{figure}
+
+\pagebreak
+
+
+

@@ -1,0 +1,31 @@
+% setwd("C:\\Users\\triffe\\git\\ViennaPaper\\ALBERTPAPERS\\Table2") ; getwd()
+% this will need to be rerun as a .tex- choose latex under external tools.
+\documentclass[a4paper]{article}
+\usepackage[OT1]{fontenc}
+\usepackage{longtable}
+\usepackage{Sweave}
+\begin{document}
+
+\title{20 year-olds attending school, \% with children by level attending}
+\maketitle
+
+<<echo=FALSE,results=hide>>=
+library(Hmisc)
+DATA <- read.table("\\\\158.109.138.185\\compartit$\\jgarcia\\viena\\figures\\FIGURE8.tab",header=T,sep="\t",na.strings = ".")
+DATA$country <- as.character(DATA$country)
+DATA$country <- sapply(DATA$country,gsub,pattern="ublic",replacement="")
+Sample <- paste(DATA$country,DATA$year,sep=" ")
+# make tables for xtable output
+Table2 <- matrix(".",nrow=length(unique(Sample)),ncol=3,dimnames=list(sort(unique(Sample)),c("prim","sec","univ")))
+Table2[,1] <- DATA[,3]
+Table2[,2] <- DATA[,4]
+Table2[,3] <- DATA[,5]
+Table2[is.na(Table2)] <- "."
+@
+
+\pagebreak
+<<echo=FALSE,results=tex>>=
+a <- latex(Table2,longtable=TRUE,file="",caption="20 year-olds attending school, \\% with children by level attending")
+@
+
+\end{document}
