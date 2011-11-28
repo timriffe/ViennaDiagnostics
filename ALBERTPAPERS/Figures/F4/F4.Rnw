@@ -1,7 +1,7 @@
 \section*{}
 \SweaveOpts{prefix.string=figs/F4}
 \tikzset{font=\small}
-
+%%% ignore!!!!!!!!!!!!!!!!!!
 <<>>=
 # read in data for Figure 4
 DATA <- read.table("http://www.ced.uab.es/worldfam/figures/figure4.tab",header=T,sep="\t",na.strings = ".")

@@ -1,0 +1,43 @@
+country	year	withchild1	 withchild2	prop_child
+Ethiopia	2000	0.08	0.11	0.53
+Kenya	1999	0.40	0.21	0.57
+Malawi	2008	0.29	0.19	0.67
+Rwanda	2002	0.09	0.04	0.28
+Tanzania	2002	0.38	0.15	0.62
+Uganda	2002	0.55	0.34	0.72
+Middle Africa		0.17	0.17	0.68
+Morocco	2003	0.11	0.01	0.18
+South Africa	2001	0.28	0.27	0.38
+Rest of Southern A.		0.15	0.14	0.58
+Ghana	2000		0.20	0.48
+Mali	1998	0.58	0.11	0.65
+Sierra Leone	2004	0.13	0.06	0.55
+Rest of Western Africa		0.17	0.17	0.63
+Puerto Rico	2000		0.12	0.28
+Dominican Republic	2002	0.73	0.20	0.47
+Haiti	2000	0.11	0.03	0.36
+Costa Rica	2000	0.41	0.14	0.39
+Mexico	2000	0.34	0.06	0.36
+Panama	2000	0.53	0.14	0.43
+Remaining Central America		0.50	0.14	0.53
+United States	2000		0.07	0.19
+Argentina	2001	0.35	0.09	0.31
+Bolivia	2001	0.60	0.38	0.47
+Brazil	2000	0.30	0.12	0.36
+Colombia	2005	0.34	0.14	0.39
+Ecuador	2001	0.22	0.14	0.44
+Peru	2007	0.26	0.08	0.33
+Venezuela	2001	0.32	0.13	0.40
+Eastern Asia			0.12	0.26
+India	2004	0.13	0.03	0.38
+Cambodia	1998	0.21	0.09	0.31
+Philippines	2000	0.27	0.09	0.21
+Armenia	2001		0.05	0.19
+Jordan	2004		0.01	0.14
+Belarus	1999		0.08	0.21
+Hungary	2001		0.00	0.12
+Romania	2002	0.09	0.01	0.17
+Portugal	2001	0.12	0.01	0.09
+Spain	2001	0.02	0.01	0.04
+France	1999	0.06	0.01	0.05
+Switzerland	2000		0.00	0.04
