@@ -901,7 +901,7 @@ DATA <- DATA[!DATA$country %in% c("Italy","Palestine","Slovenia","","Austria","U
 DATA <- DATA[!DATA$country %in% c("Switzerland","France","Spain","Austria","Romania","Belarus","United States"),]
 cntries <- unique(DATA$country)
 DATA <- DATA[!DATA$AGE<15,]
-
+#unique(DATA$country)
 #plot(NULL,type="n",xlim=c(15,24),ylim=c(0,100))
 #for (i in 1:length(cntries)){
 #	x <- DATA$AGE[DATA$country==cntries[i]]

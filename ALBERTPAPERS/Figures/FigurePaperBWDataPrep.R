@@ -252,17 +252,18 @@ rm(DATAadj)
 # -----------------------------------------------------------------------------------------------------------------------------
 # Figure 7
 # Figure 7 (using data called Figure 8)
-DATA <- read.table("FIGURE8.tab",
+
+
+DATA <- read.table("FIGURE8.txt",
         header=TRUE,
         sep="\t",
-        na.strings = ".", 
+        #na.strings = ".", 
         stringsAsFactors = FALSE)
 
 # many more removed
-DATA <- DATA[!DATA$country %in% c("Kyrgyz Republic","Kazakhstan","Madagascar","Malaysia","Niger","Zimbabwe",
-                "Jordan","Ghana","Cote Ivoire","Belarus","Armenia", rm.countries),]
+DATA <- DATA[!DATA$country %in% c("Ghana","Puerto Rico","Eastern Asia","Armenia","Jordan"),]
 cntries <- unique(DATA$country)
-DATA <- DATA[!DATA$AGE<15,]
+#DATA <- DATA[!DATA$AGE<15,]
 
 
 DATAadj <- DATA
@@ -270,38 +271,105 @@ femadj <- matrix(0,nrow=length(cntries),ncol=3)
 colnames(femadj) <- c("prop_child","primarychild","secondarychild")
 rownames(femadj) <- cntries
 for (i in 1:length(cntries)){
-    # union in school
-    ind <- DATA$country == cntries[i] 
-    x <- DATA$AGE[ind]
-    y <- 100*DATA$prop_child[ind]
+    # union in school i <- 37
+    ind <- DATA$country == cntries[i]
+    x <- DATA$Age[ind]
+    y <- DATA$prop_child[ind]
     
     if (sum(sign(diff(y)) == -1,na.rm=TRUE) > 0 & min(diff(y),na.rm=TRUE) < -.5){
         x2 <- x[!is.na(y)]
         y <- smooth.spline(x2,y[!is.na(y)],spar=.4)$y
         y[y < 0] <- 0
-        DATAadj$prop_child[ind & DATA$AGE %in% x2] <- y/100
+        DATAadj$prop_child[ind & DATA$Age %in% x2] <- y
         femadj[i,1] <- 1
     }
-    y <- 100*DATA$withchild1[ind]
+    y <- DATA$withchild1[ind]
     if (sum(sign(diff(y)) == -1,na.rm=TRUE) > 0 & min(diff(y),na.rm=TRUE) < -.5){
         x2 <- x[!is.na(y)]
         y <- smooth.spline(x2,y[!is.na(y)],spar=.4)$y
         y[y < 0] <- 0
-        DATAadj$withchild1[ind & DATA$AGE %in% x2] <- y/100
+        DATAadj$withchild1[ind & DATA$Age %in% x2] <- y
         femadj[i,2] <- 1
     }
-    y <- 100*DATA$withchild2[ind]
+    y <- DATA$withchild2[ind]
     if (sum(sign(diff(y)) == -1,na.rm=TRUE) > 0 & min(diff(y),na.rm=TRUE) < -.5){
         x2 <- x[!is.na(y)]
         y <- smooth.spline(x2,y[!is.na(y)],spar=.4)$y
         y[y < 0] <- 0
-        DATAadj$withchild2[ind & DATA$AGE %in% x2] <- y/100
+        DATAadj$withchild2[ind & DATA$Age %in% x2] <- y
         femadj[i,3] <- 1
     }
 }
-DATAadj <- DATAadj[DATAadj$AGE==20,]
+DATAadj <- DATAadj[DATAadj$Age==20,]
+
+DATAadj$prop_child <- DATAadj$prop_child / 100
+DATAadj$withchild1 <- DATAadj$withchild1 / 100
+DATAadj$withchild2 <- DATAadj$withchild2 / 100
 
 save(DATAadj,file = "Fig7_DATAadj.Rdata")
 
+#DATAJ <- read.table("/home/triffe/git/ViennaDiagnostics/ALBERTPAPERS/Figures/DATAfigBW/Fig8Jeroendataall.txt", 
+#           header = TRUE, stringsAsFactors = FALSE, na.strings = ".", sep = "\t")
+#dim(DATAJ)
+
+
 # clean up
 rm(list = ls())
+
+
+
+DATA <- read.table("FIGURE8.txt",
+        header=TRUE,
+        sep="\t",
+        #na.strings = ".", 
+        stringsAsFactors = FALSE)
+
+# many more removed
+DATA <- DATA[!DATA$country %in% c("Ghana","Puerto Rico","Eastern Asia","Armenia","Jordan","Senegal","Jamaica","Vietnam"),]
+#DATA <- DATA[!DATA$country %in% rm.countries,]
+
+cntries <- unique(DATA$country)
+#DATA <- DATA[!DATA$AGE<15,]
+
+
+DATAadj <- DATA
+femadj <- matrix(0,nrow=length(cntries),ncol=3)
+colnames(femadj) <- c("prop_child","primarychild","secondarychild")
+rownames(femadj) <- cntries
+for (i in 1:length(cntries)){
+    # union in school i <- 37
+    ind <- DATA$country == cntries[i]
+    x <- DATA$Age[ind]
+    y <- DATA$prop_child[ind]
+    
+    if (sum(sign(diff(y)) == -1,na.rm=TRUE) > 0 & min(diff(y),na.rm=TRUE) < -.5){
+        x2 <- x[!is.na(y)]
+        y <- smooth.spline(x2,y[!is.na(y)],spar=.4)$y
+        y[y < 0] <- 0
+        DATAadj$prop_child[ind & DATA$Age %in% x2] <- y
+        femadj[i,1] <- 1
+    }
+    y <- DATA$withchild1[ind]
+    if (sum(sign(diff(y)) == -1,na.rm=TRUE) > 0 & min(diff(y),na.rm=TRUE) < -.5){
+        x2 <- x[!is.na(y)]
+        y <- smooth.spline(x2,y[!is.na(y)],spar=.4)$y
+        y[y < 0] <- 0
+        DATAadj$withchild1[ind & DATA$Age %in% x2] <- y
+        femadj[i,2] <- 1
+    }
+    y <- DATA$withchild2[ind]
+    if (sum(sign(diff(y)) == -1,na.rm=TRUE) > 0 & min(diff(y),na.rm=TRUE) < -.5){
+        x2 <- x[!is.na(y)]
+        y <- smooth.spline(x2,y[!is.na(y)],spar=.4)$y
+        y[y < 0] <- 0
+        DATAadj$withchild2[ind & DATA$Age %in% x2] <- y
+        femadj[i,3] <- 1
+    }
+}
+DATAadj <- DATAadj[DATAadj$Age==20,]
+
+DATAadj$prop_child <- DATAadj$prop_child / 100
+DATAadj$withchild1 <- DATAadj$withchild1 / 100
+DATAadj$withchild2 <- DATAadj$withchild2 / 100
+
+save(DATAadj,file = "Fig7_DATAadj.Rdata")
